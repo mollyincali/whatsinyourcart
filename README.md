@@ -2,13 +2,19 @@
 Idea 1: Customer Support on Twitter 
 - 3 million tweets
 - MVP: 
-  - Sentiment analysis, classify tone / anger level
+  - Sentiment analysis
   - Predict common problems by company 
 - Link: https://www.kaggle.com/thoughtvector/customer-support-on-twitter
 
-Idea 2: Yelp Reviews 
-- 5 million reviews, and 174,000 business 
+Idea 2: Instacart Orders
+- 3 million instacart orders
+- MVP: 
+ - Predict what will be in the customer's next order
+ - Predict top day & time of orders
+- Link: https://www.kaggle.com/c/instacart-market-basket-analysis/overview
+
+Idea 3: Identify a Whale by it's tail
+- 25,000 images
 - MVP:
-  - Sentiment analysis 
-  - Predict likes on reviews
-- Link: https://www.kaggle.com/yelp-dataset/yelp-dataset?select=yelp_academic_dataset_business.json
+ -Build an algorithm to identify individual whales in images 
+- Link: https://www.kaggle.com/c/humpback-whale-identification/overview 
