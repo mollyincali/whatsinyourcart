@@ -1,11 +1,15 @@
 # Capstone2 Proposal
 
-Idea: Instacart Orders
-- 3 million instacart orders spanned across multiple CSV files
-- MVP: 
- - Predict what will be in the customer's next order
- - Predict top day & time of orders
-- MVP +:
- - NLP on items in cart, what is most popular
- - Can I group individuals based on items in their cart? Produce, Process, or mix?
-- Link: https://www.kaggle.com/c/instacart-market-basket-analysis/overview
+What's in your cart?
+
+3 million customer orders from the online food shopping company Instacart spanned across multiple CSV files
+
+* MVP: 
+    - Can I predict what will be in the customer's next order?
+    - Can I predict top day & time of orders?
+* MVP +:
+    - Explore items in cart, what is most popular?
+    - Do "groups" (those who mainly by produce, process, or a mix) have different purchasing patterns?
+    - Can I predict churn rate if I say customers "have churned" after not order  within 30 days?
+
+* Data Link: https://www.kaggle.com/c/instacart-market-basket-analysis/overview
