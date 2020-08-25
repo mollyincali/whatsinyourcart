@@ -1,13 +1,13 @@
 ![title](images/title.jpg)
 
-3 million customer orders from the online food shopping company Instacart spanned across multiple CSV files
+![title](images/instacartlogo.png)
+- Instacart partners with most supermarkets, and some local speciality shops depending on your area. Once you place an order a "personal shopper" will fulfill and deliver your order to your door on the same day
+- This dataset is made up of 3 million food orders from about 120,000 customers from the company spanned across multiple CSV files
 
-* MVP: 
-    - Can I predict what will be in the customer's next order?
-    - Can I predict top day & time of orders?
-* MVP +:
-    - Explore items in cart, what is most popular?
-    - Do "groups" have different purchasing patterns?
-    - Can I predict churn rate if I say customers "have churned" after not order  within 30 days?
+## Model Building
+- Built a Decision Tree with mean accuracy score of 57.5%
+- Built a Random Forest with mean accuracy score of 64%
+- Ran gridsearch to find best parameters for a Random Forest Classifier
 
+#### Credits
 *"The Instacart Online Grocery Shopping Dataset 2017” Accessed from [here](https://www.instacart.com/datasets/grocery-shopping-2017) on August 20th, 2020*
