@@ -14,7 +14,7 @@ def test_df(orders_df, prior_df):
 
     returns: 
         full_test: full merged df of 75,000 users
-        test_df: df of 75,000 userse with collinear/duplicate columns removed
+        test_df: df of 75,000 users with collinear/duplicate columns removed
         test_target: target column
     '''
     order_test = orders_df[orders_df['eval_set'] == "test"].copy()
@@ -23,7 +23,7 @@ def test_df(orders_df, prior_df):
     merged_test = order_test.merge(orders_df, how='inner', left_on=["user_id", "prev"], right_on=["user_id", "order_number"])
     
     full_test = pd.merge(merged_test, prior_df, on="order_id") 
-    test_df = full_test[['order_dow', 'order_hour_of_day', 'days_since_prior_order', 'product_id',
+    test_df = full_test[['user_id', 'order_dow', 'order_hour_of_day', 'days_since_prior_order', 'product_id',
        'add_to_cart_order', 'reordered']]
     test_target = test_df.pop('reordered')
     
@@ -37,11 +37,11 @@ def train_df(orders_df, train_df):
 
     returns: 
         full_train: full merged df of 121k+ users
-        train_df: df of 121k+ userse with collinear/duplicate columns removed
+        train_df: df of 121k+ users with collinear/duplicate columns removed
         train_target: target column
     '''
     full_train = pd.merge(train_df, orders_df, how='left')
-    train_df = full_train[['order_dow', 'order_hour_of_day', 'days_since_prior_order', 'product_id',
+    train_df = full_train[['user_id', 'order_dow', 'order_hour_of_day', 'days_since_prior_order', 'product_id',
        'add_to_cart_order', 'reordered']]
     train_target = train_df.pop('reordered')
     
