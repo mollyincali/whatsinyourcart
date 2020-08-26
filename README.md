@@ -8,20 +8,16 @@
 ![title](images/dayofweek.png)
 ![title](images/hour.png)
 
-## Question Number One:
-- Can I predict if an item will be reordered by a customer?
-
-## Question Number Two:
-- Can I group users together based on their purchases and recommend new items?
+## Principal Components
+- I organized my data frame to be users and the number of items for each aisle they purchaed per order. I wanted to explore PCA to see how many features I can reduce my matrix down to.
+- Realizing that I needed to have 117 feautres to account for 90% variance in my model tells me that my features are already orthogonal (or pretty close)
+![title](images/pca.png)
 
 ## Supervised Machine Learning
-- Built a Decision Tree with mean accuracy score of <num>
-- Ran gridsearch to find best parameters for a Decision Tree Classifier <num>
-- Built a Random Forest with mean accuracy score of <num>
-- Ran gridsearch to find best parameters for a Random Forest Classifier <num>
+
 
 ## Unsupervised Machine Learning
-- PCA: 
+
 
 
 #### Credits

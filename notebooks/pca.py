@@ -5,6 +5,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import pairwise_distances
 from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     #---    Upload test / train csv
@@ -28,7 +30,7 @@ if __name__ == '__main__':
     #---    PCA Work
     pca_work = pd.crosstab(full['user_id'], full['aisle'])  #shape (131,209 by 134)
     scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
-    pca_scaled = scaler.fit_transform(pca_work) 
+    pca_scaled = scaler.fit_transform(pca_work)
 
     pca = PCA(n_components=6)
     pca.fit(pca_scaled)
@@ -41,22 +43,37 @@ if __name__ == '__main__':
 
     #ugly graph
     fig, ax = plt.subplots(1, 1, figsize=(8, 6))
-    ax.scatter(X_pca[:, 0], X_pca[:, 1],
-           cmap=plt.cm.Set1, edgecolor='k', s=40)
+    ax.scatter(X_pca[:, 0], X_pca[:, 1], edgecolor='k', s=40)
+    ax.set_title("First two PCA directions")
+    ax.set_xlabel("1st eigenvector (PC1)")
+    ax.set_ylabel("2nd eigenvector (PC2)")
     plt.show();
-
-    #explain variance only 10%
-    np.sum(pca.explained_variance_ratio_)
 
     #this graph shows something different?
-    total_variance = np.sum(pca.explained_variance_)
-    cum_variance = np.cumsum(pca.explained_variance_)
-    prop_var_expl = cum_variance/total_variance
+    # total_variance = np.sum(pca.explained_variance_)
+    # cum_variance = np.cumsum(pca.explained_variance_)
+    # prop_var_expl = cum_variance/total_variance
 
+    #looking for ideal PCA number
+    ratio = []
+    for num in range(6, 134):
+        pca = PCA(n_components=num)
+        pca.fit(pca_scaled)
+        X_pca = pca.transform(pca_scaled)
+        ratio.append([num, np.sum(pca.explained_variance_ratio_)])
+    
+    #make df
+    ratio_df = pd.DataFrame(ratio)
+
+    #graph variance
     fig, ax = plt.subplots(figsize=(8,6))
-    ax.plot(prop_var_expl, color='red', linewidth=2, label='Explained variance')
-    ax.axhline(0.9, label='90% goal', linestyle='--', color="black", linewidth=1)
-    ax.set_ylabel('cumulative prop. of explained variance')
-    ax.set_xlabel('number of principal components')
+    ax.plot(ratio_df[1], color='#F46708', linewidth=3, label='Explained Variance')
+    ax.axhline(0.9, label='90% goal', linestyle='--', linewidth='2', color="#F1D78C")
+    ax.axvline(111, label='Target # PCA = 117', linestyle='--', linewidth='2', color="#E84846")
+    ax.set_ylabel('Explained Variance Ratio', fontdict=fontaxis)
+    ax.set_xlabel('Number of Principal Components', fontdict=fontaxis)
+    ax.tick_params(axis='both', which='major', labelsize=18)
     ax.legend()
     plt.show();
+
+    

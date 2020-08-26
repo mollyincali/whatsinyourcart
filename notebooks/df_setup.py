@@ -62,12 +62,12 @@ def full_df(order_train, order_prior, products, aisle, depart, orders):
 
 if __name__ == '__main__':    
     #create all data frames
-    order_train = get_csv('../../instacart_data/order_products__train.csv')
-    order_prior = get_csv('../../instacart_data/order_products__prior.csv')
-    orders = get_csv('../../instacart_data/orders.csv')
-    aisle = get_csv('../../instacart_data/aisles.csv')
-    depart = get_csv('../../instacart_data/departments.csv')
-    products = get_csv('../../instacart_data/products.csv')
+    order_train = pd.read_csv('../../instacart_data/order_products__train.csv')
+    order_prior = pd.read_csv('../../instacart_data/order_products__prior.csv')
+    orders = pd.read_csv('../../instacart_data/orders.csv')
+    aisle = pd.read_csv('../../instacart_data/aisles.csv')
+    depart = pd.read_csv('../../instacart_data/departments.csv')
+    products = pd.read_csv('../../instacart_data/products.csv')
     
     #full df for graphing
     full = full_df(order_train, order_prior, products, aisle, depart, orders)

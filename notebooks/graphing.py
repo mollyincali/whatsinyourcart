@@ -12,7 +12,7 @@ def make_graph(df, col_x, col_y, title, x_label, y_label):
     ax.tick_params(axis='both', which='major', labelsize=18)
     plt.title(title, fontdict=fonttitle)
     plt.show()
-    make_graph(hours, 'index', 'order_hour_of_day', 'Orders by Hour', "Hours", 'Number of Orders')
+
 if __name__ == "__main__":
     full = pd.read_csv("../full.csv")
 
@@ -29,20 +29,22 @@ if __name__ == "__main__":
     fontaxis = {'fontname':'Helvetica', 'fontsize':20}
 
     #---    things to graph
+    high_order = full.groupby('product_name').agg({"order_id":"count"})\
+                     .sort_values(by='order_id', ascending = False).reset_index()[:15]
+
     high_reord = full.groupby('product_name').agg({"reordered":"count"})\
-                     .sort_values(by='reordered', ascending = False).reset_index()[:50]
-    # dow = full['order_dow'].value_counts().reset_index()
+                     .sort_values(by='reordered', ascending = False).reset_index()[:15]
+    dow = full['order_dow'].value_counts().reset_index()
     hours = full['order_hour_of_day'].value_counts().reset_index().sort_values(by="index")
-    # num_order = full['order_number'].value_counts()
-    # top_depart = full.groupby('department').agg({"product_name":"size"})\
-    #                  .sort_values(by='product_name', ascending = False).reset_index()
-    # top_aisle = full.groupby('aisle').agg({"product_name":"size"})\
-    #                  .sort_values(by='product_name', ascending = False).reset_index()[:25]
-    # bottom_aisle = full.groupby('aisle').agg({"product_name":"size"})\
-    #                  .sort_values(by='product_name', ascending = False).reset_index()[84:]
+    num_order = full['order_number'].value_counts()
+    top_depart = full.groupby('department').agg({"product_name":"size"})\
+                     .sort_values(by='product_name', ascending = False).reset_index()
+    top_aisle = full.groupby('aisle').agg({"product_name":"size"})\
+                     .sort_values(by='product_name', ascending = False).reset_index()[:20]
+    bottom_aisle = full.groupby('aisle').agg({"product_name":"size"})\
+                     .sort_values(by='product_name', ascending = False).reset_index()[84:]
 
     #---    plots
     make_graph(hours, 'index', 'order_hour_of_day', 'Orders by Hour', "Hours", 'Number of Orders')
-    # make_graph(dow, 'index', 'order_dow', 'Orders by Day of Week', "Day", 'Number of Orders', )
-    # make_graph(high_reord, 'product_name', 'reordered', 'Highest Reordered Item', "Item", 'Number of Reorders')
-                          
+    make_graph(dow, 'index', 'order_dow', 'Orders by Day of Week', "Day", 'Number of Orders', )
+    make_graph(high_reord, 'reordered', 'product_name', 'Top 15 Highest Reordered Item', 'Number of Reorders', "Item")                
