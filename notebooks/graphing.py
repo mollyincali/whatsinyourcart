@@ -4,9 +4,19 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 sns.set()
 
+def make_graph(df, col_x, col_y, title, x_label, y_label)
+    fig, ax = plt.subplots(figsize = (20, 10))
+    ax = sns.barplot(df[col_x], df[col_y], palette = citrus)
+    ax.set_ylabel(ylabel, fontdict=fontaxis)
+    ax.set_xlabel(xlabel, fontdict=fontaxis)
+    plt.title(title fontdict=fonttitle)
+    plt.show()
+
+
 if __name__ == "__main__":
     full = pd.read_csv("../full.csv")
 
+    #---    making graphs special
     color1 = '#F1D78C'
     color2 = '#F6A811'
     color3 = '#F46708'
@@ -32,32 +42,7 @@ if __name__ == "__main__":
                      .sort_values(by='product_name', ascending = False).reset_index()[84:]
 
     #---    plots
-    fig, ax = plt.subplots(figsize = (20, 10))
-    ax = sns.barplot(hours['index'], hours['order_hour_of_day'], palette = citrus)
-    ax.set_ylabel('Number of Orders', fontdict=fontaxis)
-    ax.set_xlabel("Hours", fontdict=fontaxis)
-    plt.title('Orders by Hour', fontdict=fonttitle)
-    plt.show()
-    plt.savefig('hour.png');
-
-    fig, ax = plt.subplots(figsize = (20, 10))
-    ax = sns.barplot(dow['index'], dow['order_dow'], palette = citrus)
-    ax.set_ylabel('Number of Orders', fontdict=fontaxis)
-    ax.set_xlabel("Day", fontdict=fontaxis)
-    plt.title('Orders by Day of Week', fontdict=fonttitle)
-    plt.show()
-    plt.savefig('dayofweek');
-
-    fig, ax = plt.subplots(figsize = (20, 10))
-    ax = sns.barplot(high_reord['product_name'], high_reord['reordered'], palette = citrus)
-    plt.xticks(rotation=90)
-    ax.set_ylabel('Number of Reorders', fontdict=fontaxis)
-    ax.set_xlabel("Item", fontdict=fontaxis)
-    plt.title('Highest Reordered Item', fontdict=fonttitle)
-    plt.show()
-    plt.savefig('highestreorder');
-
-    #---    df to look at products by hour
-    # part = full[['product_name','order_hour_of_day','order_number']].copy()
-    # by_prod = part.groupby(['product_name', 'order_hour_of_day']).agg({'order_number':'size'}).copy().reset_index()
-                                                         
+    make_graph(hours, 'index', 'order_hour_of_day', 'Orders by Hour',"Hours", 'Number of Orders')
+    make_graph(dow, 'index', 'order_dow', 'Orders by Day of Week', "Day", 'Number of Orders', )
+    make_graph(high_reord, 'product_name', 'reordered', 'Highest Reordered Item', "Item", 'Number of Reorders')
+                          

@@ -4,68 +4,59 @@ from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import pairwise_distances
 from sklearn import metrics
+from sklearn.preprocessing import StandardScaler
 
 if __name__ == '__main__':
     #---    Upload test / train csv
-    X_test = pd.read_csv("../X_test.csv").drop('Unnamed: 0', axis = 1, inplace=True)
-    y_test = pd.read_csv("../y_test.csv").drop('Unnamed: 0', axis = 1, inplace=True)
-    X_train = pd.read_csv("../X_train.csv").drop('Unnamed: 0', axis = 1, inplace=True)
-    y_train = pd.read_csv("../y_train.csv").drop('Unnamed: 0', axis = 1, inplace=True)
+    X_test = pd.read_csv("../X_test.csv")
+    y_test = pd.read_csv("../y_test.csv")
+    X_train = pd.read_csv("../X_train.csv")
+    y_train = pd.read_csv("../y_train.csv")
 
-    #---    Upload product to then merge with test
-    products = get_csv('../../instacart_data/products.csv')
-    X_train = pd.merge(X_train, products, on = 'product_id')
+    X_test.drop('Unnamed: 0', axis = 1, inplace = True)
+    y_test.drop('Unnamed: 0', axis = 1, inplace = True)
+    X_train.drop('Unnamed: 0', axis = 1, inplace = True)
+    y_train.drop('Unnamed: 0', axis = 1, inplace = True)
 
-    #---    Tfidf 
-    vectorizer = TfidfVectorizer()
-    X = vectorizer.fit_transform(X_train['product_name'])
-    features = vectorizer.get_feature_names()
-    #maybe stem these words?
+    #---    merge aisle and products
+    aisle = pd.read_csv('../../instacart_data/aisles.csv')
+    products = pd.read_csv('../../instacart_data/products.csv')
+    p_a = pd.merge(aisle, products, on = 'aisle_id')
+    p_a.drop('department_id', axis = 1, inplace = True)
+    full = pd.merge(X_train, p_a, on = 'product_id')    
 
-    #---    kMean
-    kmeans = KMeans() 
-    kmeans.fit(X)
+    #---    PCA Work
+    pca_work = pd.crosstab(full['user_id'], full['aisle'])  #shape (131,209 by 134)
+    scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
+    pca_scaled = scaler.fit_transform(pca_work) 
 
-    #---    Printing
-    top_centroids = kmeans.cluster_centers_.argsort()[:,-1:-11:-1]
-    print("Top features (words) for each cluster:")
-    for num, centroid in enumerate(top_centroids):
-        print(f"{num}, {', '.join(features[i] for i in centroid)}")
+    pca = PCA(n_components=6)
+    pca.fit(pca_scaled)
+    X_pca = pca.transform(pca_scaled) #from 134 features to 6
 
-    #---    Fewerer Features
-    vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
-    X1000 = vectorizer.fit_transform(X_train['product_name'])
-    features = vectorizer.get_feature_names()
-    kmeans = KMeans()
-    kmeans.fit(X1000)
+    print("\nData after PCA into 6 components")
+    print("PC1\tPC2\tPC3\tPC4\tPC5\tPC6")
+    for i in range(6):
+        print(f'{X_pca[i,0]:0.1f}, \t{X_pca[i,1]:0.1f}, \t{X_pca[i,2]:0.1f}, \t{X_pca[i,3]:0.1f}, \t{X_pca[i,4]:0.1f}, \t{X_pca[i,5]:0.1f}')
 
-    labels = kmeans.labels_
-    metrics.silhouette_score(X1000, labels, metric='euclidean')
+    #ugly graph
+    fig, ax = plt.subplots(1, 1, figsize=(8, 6))
+    ax.scatter(X_pca[:, 0], X_pca[:, 1],
+           cmap=plt.cm.Set1, edgecolor='k', s=40)
+    plt.show();
 
-    top_centroids1000 = kmeans.cluster_centers_.argsort()[:,-1:-11:-1]
-    print("Top features for each cluster with 1000 max features:")
-    for num, centroid in enumerate(top_centroids1000):
-        print(f"{num}: {', '.join(features[i] for i in centroid)}")
+    #explain variance only 10%
+    np.sum(pca.explained_variance_ratio_)
 
-"""
-Results:
-Top features for each cluster with 1000 max features:
-0: yogurt, greek, total, plain, fat, strawberry, strained, lowfat, vanilla, nonfat
-1: banana, original, butter, chocolate, chicken, free, bread, cream, chips, white
-2: water, sparkling, spring, mineral, natural, grapefruit, coconut, lime, pure, lemon
-3: red, pepper, bell, onion, organic, grapes, seedless, peppers, vine, tomato
-4: cheese, cheddar, string, shredded, macaroni, sharp, cream, mozzarella, pizza, organic
-5: large, lemon, eggs, grade, brown, organic, aa, extra, cage, free
-6: milk, fat, organic, almond, reduced, unsweetened, free, vanilla, coconut, vitamin
-7: organic, baby, avocado, strawberries, bananas, bag, spinach, carrots, apple, blueberries
-"""
+    #this graph shows something different?
+    total_variance = np.sum(pca.explained_variance_)
+    cum_variance = np.cumsum(pca.explained_variance_)
+    prop_var_expl = cum_variance/total_variance
 
-
-
-
-
-
-
-
-    #---    Create pivot table
-    # table = pd.pivot_table(X_train, index = ['user_id'], columns = ['product_id'], aggfunc = np.unique) 
+    fig, ax = plt.subplots(figsize=(8,6))
+    ax.plot(prop_var_expl, color='red', linewidth=2, label='Explained variance')
+    ax.axhline(0.9, label='90% goal', linestyle='--', color="black", linewidth=1)
+    ax.set_ylabel('cumulative prop. of explained variance')
+    ax.set_xlabel('number of principal components')
+    ax.legend()
+    plt.show();
