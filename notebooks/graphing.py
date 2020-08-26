@@ -31,7 +31,6 @@ if __name__ == "__main__":
     #---    things to graph
     high_order = full.groupby('product_name').agg({"order_id":"count"})\
                      .sort_values(by='order_id', ascending = False).reset_index()[:15]
-
     high_reord = full.groupby('product_name').agg({"reordered":"count"})\
                      .sort_values(by='reordered', ascending = False).reset_index()[:15]
     dow = full['order_dow'].value_counts().reset_index()
