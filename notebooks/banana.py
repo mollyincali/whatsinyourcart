@@ -3,10 +3,9 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 sns.set()
-
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import KFold, cross_val_score, GridSearchCV
+from sklearn.model_selection import KFold, cross_val_score, GridSearchCV, train_test_split
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score
 
 #---    Model Codes
@@ -36,29 +35,28 @@ def gridsearch_with_output(estimator, parameter_grid, X_train, y_train):
     return best_params, model_best
 
 if __name__ == '__main__':
-    #---    Upload test / train csv
-    X_test = pd.read_csv("../X_test.csv")
-    X_train = pd.read_csv("../X_train.csv")
+    #---    Upload full csv
+    full = pd.read_csv("../full.csv")
 
-    # looking for if order had B
-    # products[products['product_name'] == 'Banana'] #24852    
-    X_test['banana1'] = np.where(X_test['product_id'] == 24852, 1, 0)
-    X_test['banana2'] = np.where(X_test['product_id'] == 13176, 1, 0)
-    X_test['banana'] = X_test['banana2'] + X_test['banana1']
-    X_test = X_test.groupby('user_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
+    full['banana1'] = np.where(full['product_name'] == 'Banana', 1, 0)
+    full['banana2'] = np.where(full['product_name'] == 'Bag of Organic Bananas', 1, 0)
+    full['banana'] = full['banana2'] + full['banana1']
+
+    #grouped by user 120,725 ban / 206,209 orders 58% of people have ordered a banana
+    # by_user = full.groupby('user_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
+    #                                 'days_since_prior_order':'max', 'add_to_cart_order':'max', 
+    #                                 'banana':'max'}).reset_index()
+
+    #grouped by orderid 885,017 / 3,346,083 orders 25% of orders have a banana
+    by_order = full.groupby('order_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
                                     'days_since_prior_order':'max', 'add_to_cart_order':'max', 
                                     'banana':'max'}).reset_index()
-    X_test.drop('user_id', axis = 1, inplace = True)
-    y_test = X_test.pop('banana') #1-10744, 0-64256
 
-    X_train['banana1'] = np.where(X_train['product_id'] == 24852, 1, 0)
-    X_train['banana2'] = np.where(X_train['product_id'] == 13176, 1, 0)
-    X_train['banana'] = X_train['banana2'] + X_train['banana1']
-    X_train = X_train.groupby('user_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
-                                    'days_since_prior_order':'max', 'add_to_cart_order':'max', 
-                                    'banana':'max'}).reset_index()
-    X_train.drop('user_id', axis = 1, inplace = True)
-    y_train = X_train.pop('banana') #1-18726, 0-112483
+    #drops NaN in "Days Since Prior Order" which represents first time user
+    by_order.dropna(inplace = True)
+    y = by_order.pop('banana')
+
+    X_train, X_test, y_train, y_test = train_test_split(by_order, y, test_size=0.3, random_state=3, stratify = y)
 
     #---    Empty lists to be appended
     mean_acc = []
@@ -140,11 +138,17 @@ if __name__ == '__main__':
 
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     fontaxis = {'fontname':'Helvetica', 'fontsize':20}
+    
+    #dat from previous run
+    oldf1 = [0.3077210344505648, 0.3257932199300277, 0.20258872651356993, 0.5025858015984956]
+    oldmean_acc = [0.7034, 0.7019466666666667, 0.74536, 0.6332266666666667]
 
     #---    Graph Score and F1 and Model
     fig, ax = plt.subplots(figsize = (20, 10))
-    ax = sns.lineplot(x = model, y = f1, color= '#F6A811', marker='*', linewidth = 5, label = 'F1 Score')
-    ax = sns.lineplot(x = model, y = mean_acc, color='#EF727F', marker='*', linewidth = 5, label = 'Mean Accuracy Score')
+    ax = sns.lineplot(x = model, y = f1, color= '#EF727F', marker='*', linewidth = 5, label = 'More Data F1 Score')
+    ax = sns.lineplot(x = model, y = oldf1, color= '#EF727F', marker='*', dashes=[(1, 1), (5, 10)], linewidth = 5, label = 'Less Data F1 Score')
+    ax = sns.lineplot(x = model, y = mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'More Data Mean Accuracy Score')  
+    ax = sns.lineplot(x = model, y = oldmean_acc, color='#F6A811', marker='*',  linestyle='-', linewidth = 5, label = 'Less Data Accuracy Score')    
     ax.tick_params(axis='both', which='major', labelsize=18)
     plt.xticks(rotation = 10)
     plt.title('Mean Accuracy Score and F1 Score', fontdict=fonttitle)

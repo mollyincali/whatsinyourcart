@@ -47,3 +47,5 @@ if __name__ == "__main__":
     make_graph(hours, 'index', 'order_hour_of_day', 'Orders by Hour', "Hours", 'Number of Orders')
     make_graph(dow, 'index', 'order_dow', 'Orders by Day of Week', "Day", 'Number of Orders', )
     make_graph(high_reord, 'reordered', 'product_name', 'Top 15 Highest Reordered Item', 'Number of Reorders', "Item")                
+
+    #---    who orders 1 thing

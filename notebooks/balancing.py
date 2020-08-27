@@ -124,16 +124,25 @@ def smote(X, y, tp, k=None):
     return X_smoted, y_smoted
 
 if __name__ == '__main__':
-    #---    Upload test / train csv
-    full = pd.read_csv("../full.csv")
+    #---    Upload full csv
+    # full = pd.read_csv("../full.csv")
 
-    full = full[['order_id', 'add_to_cart_order', 'product_name', 'user_id',
-        'order_number', 'order_dow', 'order_hour_of_day', 'days_since_prior_order']]
+    # full['banana1'] = np.where(full['product_name'] == 'Banana', 1, 0)
+    # full['banana2'] = np.where(full['product_name'] == 'Bag of Organic Bananas', 1, 0)
+    # full['banana'] = full['banana2'] + full['banana1']
 
-    full['banana1'] = np.where(full['product_name'] == 'Bananfua', 1, 0)
-    full['banana2'] = np.where(full['product_name'] == 'Bag of Organic Bananas', 1, 0)
-    full['banana'] = full['banana2'] + full['banana1']
+    #grouped by user 120,725 ban / 206,209 orders 58% of people have ordered a banana
+    # full1 = full.groupby('user_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
+    #                                 'days_since_prior_order':'max', 'add_to_cart_order':'max', 
+    #                                 'banana':'max'}).reset_index()
 
-    full1 = full.groupby('user_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
+    by_order = pd.read_csv("../by_order.csv")
+    
+    #grouped by orderid 885,017 / 3,346,083 orders 25% of orders have a banana
+    by_order = full.groupby('order_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
                                     'days_since_prior_order':'max', 'add_to_cart_order':'max', 
                                     'banana':'max'}).reset_index()
+    
+    #drops NaN in "Days Since Prior Order" which represents first time user
+    by_order.dropna(inplace = True)
+    y = by_order.pop('banana')
