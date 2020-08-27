@@ -151,10 +151,11 @@ if __name__ == '__main__':
 
     # #---    Graph Score and F1 and Model
     fig, ax = plt.subplots(figsize = (20, 10))
-    ax = sns.lineplot(x = model, y = f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
-    ax = sns.lineplot(x = model, y = mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')     
+    ax.plot(model, f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
+    ax.plot(model, mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')     
     ax.set_ylim(ymin = 0.1, ymax = 0.9)
     ax.tick_params(axis='both', which='major', labelsize=18)
+    plt.legend()
     plt.xticks(rotation = 10)
     plt.title('Do you order something Organic? \n Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
     plt.show();

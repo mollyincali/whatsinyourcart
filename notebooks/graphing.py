@@ -66,3 +66,30 @@ if __name__ == "__main__":
 
     ax = sns.scatterplot(top_one['order_hour_of_day'], top_one['count'])
     plt.show(); 
+
+    #product 
+    cool = full.groupby(['order_hour_of_day', 'aisle']).agg({'order_id':'count'})  
+
+    cool20 = cool[cool['order_hour_of_day'] == 20].copy()
+    cool10 = cool[cool['order_hour_of_day'] == 15].copy()
+    cool15 = cool[cool['order_hour_of_day'] == 10].copy()
+
+    cool20['perc'] = cool20['order_id'] / (np.sum(cool20['order_id']))
+    cool10['perc'] = cool10['order_id'] / (np.sum(cool10['order_id']))
+    cool15['perc'] = cool15['order_id'] / (np.sum(cool15['order_id']))
+
+    cool10top = cool10.sort_values(by='perc', ascending = False)[:10]
+    cool15top = cool15.sort_values(by='perc', ascending = False)[:10]
+    cool20top = cool20.sort_values(by='perc', ascending = False)[:10]
+
+    fig, ax = plt.subplots(figsize = (10, 5))
+    plt.scatter(cool10top['aisle'], cool10top['perc'] * 100, alpha=0.5, color= '#F6A811', label = '10am', marker="*")
+    plt.scatter(cool15top['aisle'], cool15top['perc'] * 100, alpha=0.5, color= '#F46708', label = '3pm')
+    plt.scatter(cool20top['aisle'], cool20top['perc'] * 100, alpha=0.5, color= '#EF727F', label = '8pm')     
+    plt.legend()
+    plt.show();
+
+
+    for prod in ice['product_name']:
+        if prod in toplist:
+            ice[ice.product_name != prod]

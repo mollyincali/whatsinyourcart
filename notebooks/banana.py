@@ -151,13 +151,12 @@ if __name__ == '__main__':
     fontaxis = {'fontname':'Helvetica', 'fontsize':20}
 
     #---    With more data
-    model = ['Decision Tree','Random Forest Basic','Random Forest Best Param',
-         'Random Forest Class Weights','Gradient Boost']
     fig, ax = plt.subplots(figsize = (20, 10))
-    ax = sns.lineplot(x = model, y = f1, color= '#EF727F', marker='*', linewidth = 5, label = 'More Data F1 Score')
-    ax = sns.lineplot(x = model, y = mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'More Data Mean Accuracy Score')    
+    ax.plot(model, f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
+    ax.plot(model, mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')      
     ax.set_ylim(ymin = 0.1, ymax = 0.9)
     ax.tick_params(axis='both', which='major', labelsize=18)
+    plt.legend()
     plt.xticks(rotation = 10)
     plt.title('Did you order Bananas? \n Additional Data Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
     plt.show();
@@ -172,7 +171,7 @@ if __name__ == '__main__':
     #dat from previous run
     oldf1 = [0.3077210344505648, 0.3257932199300277, 0.20258872651356993, 0.5025858015984956]
     oldmean_acc = [0.7034, 0.7019466666666667, 0.74536, 0.6332266666666667]
-    oldmodel = ['Decision Tree','Random Forest Basic','Random Forest Best Param', 'Random Forest Class Weights']
+    oldmodel = ['Decision Tree','Random Forest Basic','Random Forest Best Param', 'Random Forest Class Weights'   ]
     #---    Graph Score and F1 and Model
     fig, ax = plt.subplots(figsize = (20, 10))
     ax= sns.lineplot(x = model, y = oldf1, color= '#EF727F', dashes=[(1, 1), (5, 10)], linewidth = 5, label = 'F1 Score')
