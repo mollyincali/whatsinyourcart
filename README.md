@@ -18,6 +18,10 @@
 - Can I predict if your order has the number one ordered item - Bananas! By only looking at the day and time of order, the number of days since your last order, and the number of items in our order?
 - Even though it is the most purchased item with over 500,000 orders, we are dealing with imbalanced classes, only 26% of orders have bananas
 - Many attempts were made to adjust this imbalance, lets look at the progession of scores over different models
+    - Decision Tree
+    - RF Basic = Random Forest with 50 trees
+    - RF Best Param = Random Forest with 80 trees, max depth of 4 and max features of 3, and min samples split of 4
+    - RF Class Weights = Same as Best Param but found the weights of each group and used that in class weights 
 ![title](images/scores.png)
 
 ## Unsupervised Machine Learning

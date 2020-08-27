@@ -1,13 +1,13 @@
 import numpy as np
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import KFold, cross_val_score, GridSearchCV
-from sklearn.metrics import confusion_matrix 
-from sklearn.metrics import f1_score
 import seaborn as sns
 import matplotlib.pyplot as plt
 sns.set()
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import KFold, cross_val_score, GridSearchCV
+from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score
 
 #---    Model Codes
 def gridsearch_with_output(estimator, parameter_grid, X_train, y_train):
@@ -76,7 +76,6 @@ if __name__ == '__main__':
     f1.append((f1_score(y_test, y_predict)))
     model.append('Decision Tree')
 
-
     #---    Random Forest Basic Model 
     rf = RandomForestClassifier(n_estimators=50)
     rf.fit(X_train, y_train)
@@ -87,7 +86,6 @@ if __name__ == '__main__':
     mean_acc.append(rf_score)
     f1.append((f1_score(y_test, y_predict)))
     model.append('Random Forest Basic')
-
 
     #---    Random Forest GridSearch
 #     random_forest_grid = {'max_depth': [4, 8, 12],
@@ -111,19 +109,6 @@ if __name__ == '__main__':
     f1.append((f1_score(y_test, y_predict)))
     model.append('Random Forest Best Param')
 
-    #---    Random Forest Trying to Balance
-    rf = RandomForestClassifier(max_depth=4, max_features=3, min_samples_split=4, bootstrap=True,
-                    n_estimators=80, random_state=3, class_weight='balanced_subsample')
-    rf.fit(X_train, y_train)
-    y_predict = rf.predict(X_test)
-    rf_score = rf.score(X_test, y_test)
-    print(f'Random Forest Mean Accuracy Weight + Bootstrap: {rf_score:.5}')
-    print(f'Random Forest F1 Score Weight + Bootstrap: {(f1_score(y_test, y_predict)):.5}\n')
-    mean_acc.append(rf_score)
-    f1.append((f1_score(y_test, y_predict)))
-    model.append('Random Forest Bootstrap + Balanced Subsample')
-
-
     #---    Balance Work
     n1 = np.sum(y_train)
     n2 = len(y_train) - n1
@@ -133,7 +118,6 @@ if __name__ == '__main__':
     print(f"w1: {w1:0.2f}, w2: {w2:0.2f}")
 
     #---    Random Forest Trying to Balance with Class Weights
-
     rf = RandomForestClassifier(max_depth=4, max_features=3, min_samples_split=4, bootstrap=True,
                     n_estimators=80, random_state=3, class_weight={1: w1, 0: w2})
     rf.fit(X_train, y_train)
