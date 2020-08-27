@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 sns.set()
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import KFold, cross_val_score, GridSearchCV, train_test_split
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score
 
@@ -34,6 +34,14 @@ def gridsearch_with_output(estimator, parameter_grid, X_train, y_train):
                                                 str(vals)))
     return best_params, model_best
 
+def balance_work(y_train):
+    n1 = np.sum(y_train)
+    n2 = len(y_train) - n1
+    n_samples = n1 + n2
+    w1 = n_samples / (2 * n1)
+    w2 = n_samples / (2 * n2)
+    return w1, w2
+
 if __name__ == '__main__':
     #---    Upload full csv
     full = pd.read_csv("../full.csv")
@@ -46,7 +54,7 @@ if __name__ == '__main__':
 
     #drops NaN in "Days Since Prior Order" which represents first time user
     by_order.dropna(inplace = True)
-    y = by_order.pop('organice')
+    y = by_order.pop('organic')
 
     X_train, X_test, y_train, y_test = train_test_split(by_order, y, test_size=0.3, random_state=3, stratify = y)
 
@@ -99,13 +107,8 @@ if __name__ == '__main__':
     f1.append((f1_score(y_test, y_predict)))
     model.append('Random Forest Best Param')
 
-    #---    Balance Work
-    n1 = np.sum(y_train)
-    n2 = len(y_train) - n1
-    n_samples = n1 + n2
-    w1 = n_samples / (2 * n1)
-    w2 = n_samples / (2 * n2)
-    print(f"w1: {w1:0.2f}, w2: {w2:0.2f}")
+    #---    Get class weights
+    w1, w2 = balance_work(y_train)
 
     #---    Random Forest Trying to Balance with Class Weights
     rf = RandomForestClassifier(max_depth=4, max_features=3, min_samples_split=4, bootstrap=True,
@@ -119,7 +122,18 @@ if __name__ == '__main__':
     f1.append((f1_score(y_test, y_predict)))
     model.append('Random Forest Class Weights')
 
-    #---    making graphs special
+    #---    Gradient Boost
+    gb = GradientBoostingClassifier(learning_rate = 0.1, n_estimators=100, max_depth = 5)
+    gb.fit(X_train, y_train)
+    y_predict = gb.predict(X_test)
+    gb_score = gb.score(X_test, y_test)
+    print(f'Gradient Boost Mean Accuracy: {gb_score:.5}')
+    print(f'Gradient Boost F1 Score: {(f1_score(y_test, y_predict)):.5}')
+    mean_acc.append(gb_score)
+    f1.append((f1_score(y_test, y_predict)))
+    model.append('Gradient Boost')
+
+    # #---    making graphs special
     color1 = '#F1D78C'
     color2 = '#F6A811'
     color3 = '#F46708'
@@ -130,19 +144,17 @@ if __name__ == '__main__':
 
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     fontaxis = {'fontname':'Helvetica', 'fontsize':20}
-    
-    #dat from previous run
-    oldf1 = [0.3077210344505648, 0.3257932199300277, 0.20258872651356993, 0.5025858015984956]
-    oldmean_acc = [0.7034, 0.7019466666666667, 0.74536, 0.6332266666666667]
 
-    #---    Graph Score and F1 and Model
+    # f1organ = [0.780855766662009, 0.810787521393353, 0.8625252230849041, 0.806316987932276, 0.8622658274810833]
+    # meanorgan = [0.6786593528620551, 0.7142106430932, 0.7781728157050755, 0.7272982059804897, 0.7785051005188102]
+    # model = ['Decision Tree', 'Random Forest Basic', 'Random Forest Best Param', 'Random Forest Class Weights', 'Gradient Boost']
+
+    # #---    Graph Score and F1 and Model
     fig, ax = plt.subplots(figsize = (20, 10))
-    ax = sns.lineplot(x = model, y = f1, color= '#EF727F', marker='*', linewidth = 5, label = 'More Data F1 Score')
-    ax = sns.lineplot(x = model, y = oldf1, color= '#EF727F', marker='*', dashes=[(1, 1), (5, 10)], linewidth = 5, label = 'Less Data F1 Score')
-    ax = sns.lineplot(x = model, y = mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'More Data Mean Accuracy Score')  
-    ax = sns.lineplot(x = model, y = oldmean_acc, color='#F6A811', marker='*',  linestyle='-', linewidth = 5, label = 'Less Data Accuracy Score')    
+    ax = sns.lineplot(x = model, y = f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
+    ax = sns.lineplot(x = model, y = mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')     
+    ax.set_ylim(ymin = 0.1, ymax = 0.9)
     ax.tick_params(axis='both', which='major', labelsize=18)
     plt.xticks(rotation = 10)
-    plt.title('Mean Accuracy Score and F1 Score', fontdict=fonttitle)
+    plt.title('Do you order something Organic? \n Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
     plt.show();
-'''

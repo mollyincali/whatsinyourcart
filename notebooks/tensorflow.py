@@ -1,3 +1,11 @@
+'''
+Start tensorflow docker container: docker exec -it tensorflow /bin/bash
+pip install -U scikit-learn  
+pip install pandas
+ipython
+get into correct folder run below
+
+'''
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split

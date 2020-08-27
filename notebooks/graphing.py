@@ -49,3 +49,20 @@ if __name__ == "__main__":
     make_graph(high_reord, 'reordered', 'product_name', 'Top 15 Highest Reordered Item', 'Number of Reorders', "Item")                
 
     #---    who orders 1 thing
+    one = full.groupby('order_id').agg({'add_to_cart_order':'max'})
+    one = pd.merge(one, full, on = 'order_id')
+    one = one[one['add_to_cart_order_x'] == 1].copy()
+    one = one[['order_id', 'add_to_cart_order_x', 
+                'product_name', 'order_dow']] 
+
+    grouped = one.groupby('product_name').agg({'order_dow':'mean', 'order_hour_of_day':'mean'})
+    counts = one['product_name'].value_counts()
+    counts = counts.reset_index()
+    counts = counts.rename(columns={'product_name':'count', 'index':'product_name'})
+    group = pd.merge(grouped, counts, on = 'product_name')
+
+    top_one = group[group['count'] > 250]
+    np.sum(group['count']) #163593
+
+    ax = sns.scatterplot(top_one['order_hour_of_day'], top_one['count'])
+    plt.show(); 
