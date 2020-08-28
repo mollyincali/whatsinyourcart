@@ -1,13 +1,6 @@
-'''
-Start tensorflow docker container: docker exec -it tensorflow /bin/bash
-pip install -U scikit-learn  
-pip install pandas
-ipython
-get into correct folder run below
-
-'''
 import numpy as np
 import pandas as pd
+import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
@@ -33,7 +26,7 @@ if __name__ == "__main__":
 
     #--- Neural Network run1
     model = keras.models.Sequential([
-        keras.layers.Dense(128, activation='swish', input_shape=[5]), 
+        keras.layers.Dense(128, activation='reLu', input_shape=[5]), 
         keras.layers.Dense(1)
         ])
     model.compile(optimizer='adam',
@@ -41,6 +34,8 @@ if __name__ == "__main__":
               metrics=['accuracy'])
     model.fit(X_train, y_train, epochs=3, batch_size=32, validation_split=0.2)
 
+run1loss = [793.7966, 181.4234, 21.2258]
+run1acc = [0.6140, 0.6274, 0.6700]
 '''
 Run1 with 1 layer relu
 Epoch 1/3
@@ -60,6 +55,9 @@ loss: 21.2258 - accuracy: 0.6700 - val_loss: 0.5802 - val_accuracy: 0.7339
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
     model.fit(X_train, y_train, epochs=3, batch_size=32, validation_split=0.2)
+
+run2loss = [873.9270, 167.2178, 4.1501]
+run2acc = [0.6138, 0.6281, 0.7076]
 '''
 Epoch 1/3
 loss: 873.9270 - accuracy: 0.6138 - val_loss: 136.7671 - val_accuracy: 0.7283
@@ -72,79 +70,109 @@ loss: 4.1501 - accuracy: 0.7076 - val_loss: 0.5795 - val_accuracy: 0.7339
     #--- Neural Network run3
     model = keras.models.Sequential([
         keras.layers.Dense(128, activation='swish', input_shape=[5]),
-        keras.layers.Dense(64, activation='swish', input_shape=[5]), 
+        keras.layers.Dense(64, activation='swish'), 
         keras.layers.Dense(1)
         ])
     model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
     model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2)
+
+run3loss = [298.1448, 0.7434, 0.8325, 0.7049, 0.6982]
+run3acc = [0.6887, 0.7334, 0.7334, 0.7335, 0.7335]
 '''
-Epoch 1/3
-loss: 179.9152 - accuracy: 0.6912 - val_loss: 0.5794 - val_accuracy: 0.7339
-Epoch 2/3
-loss: 0.7337 - accuracy: 0.7334 - val_loss: 0.5795 - val_accuracy: 0.7339
-Epoch 3/3
-loss: 0.9619 - accuracy: 0.7334 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 1/5
+loss: 298.1448 - accuracy: 0.6887 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 2/5
+loss: 0.7434 - accuracy: 0.7334 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 3/5
+loss: 0.8325 - accuracy: 0.7334 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 4/5
+loss: 0.7049 - accuracy: 0.7335 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 5/5
+loss: 0.6982 - accuracy: 0.7335 - val_loss: 0.5793 - val_accuracy: 0.7339
 '''
 
     #--- Neural Network run4
     model = keras.models.Sequential([
-        keras.layers.Dense(128, activation='swish', input_shape=[5]),
-        keras.layers.Dense(64, activation='swish', input_shape=[5]), 
+        keras.layers.Dense(256, activation='swish', input_shape=[5]),
+        keras.layers.Dense(128, activation='swish'),
+        keras.layers.Dense(64, activation='swish'),
+        keras.layers.Dense(64, activation='swish'), 
         keras.layers.Dense(1)
         ])
     model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
-    model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2)
+    model.fit(X_train, y_train, epochs=20, batch_size=32, validation_split=0.2)
 '''
-Epoch 1/5
-loss: 307.1750 - accuracy: 0.6727 - val_loss: 0.5794 - val_accuracy: 0.7339
-Epoch 2/5
-loss: 0.7176 - accuracy: 0.7332 - val_loss: 0.5793 - val_accuracy: 0.7339
-Epoch 3/5
-loss: 0.8530 - accuracy: 0.7333 - val_loss: 0.5794 - val_accuracy: 0.7339
-Epoch 4/5
-loss: 0.8805 - accuracy: 0.7333 - val_loss: 0.5793 - val_accuracy: 0.7339
-Epoch 5/5
-loss: 0.9131 - accuracy: 0.7334 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 1/20
+loss: 25.1232 - accuracy: 0.7265 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 2/20
+loss: 1.2212 - accuracy: 0.7335 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 3/20
+loss: 0.7131 - accuracy: 0.7335 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 4/20
+loss: 0.8418 - accuracy: 0.7335 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 5/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5795 - val_accuracy: 0.7339
+Epoch 6/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5796 - val_accuracy: 0.7339
+Epoch 7/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 8/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 9/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 10/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 11/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 12/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 13/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 14/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 15/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 16/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 17/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 18/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 19/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 20/20
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
 '''
 
-    #--- Neural Network run5
-    model = keras.models.Sequential([
-        keras.layers.Dense(128, activation='swish', input_shape=[5]),
-        keras.layers.Dense(128, activation='swish', input_shape=[5]),
-        keras.layers.Dense(64, activation='swish', input_shape=[5]), 
-        keras.layers.Dense(1)
-        ])
-    model.compile(optimizer='adam',
-              loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-    model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2)
-
-'''
-Epoch 1/5
-loss: 54.7439 - accuracy: 0.7221 - val_loss: 0.5796 - val_accuracy: 0.7339
-Epoch 2/5
-loss: 1.2292 - accuracy: 0.7332 - val_loss: 0.5795 - val_accuracy: 0.7339
-Epoch 3/5
-loss: 0.8140 - accuracy: 0.7334 - val_loss: 0.5793 - val_accuracy: 0.7339
-Epoch 4/5
-loss: 0.6572 - accuracy: 0.7335 - val_loss: 0.5796 - val_accuracy: 0.7339
-Epoch 5/5
-loss: 0.7685 - accuracy: 0.7335 - val_loss: 0.5794 - val_accuracy: 0.7339
-'''
-
-    #--- Neural Network run6
+    #---    Neural Net5
     model = keras.models.Sequential([
         keras.layers.Dense(256, activation='swish', input_shape=[5]),
-        keras.layers.Dense(128, activation='swish', input_shape=[5]),
-        keras.layers.Dense(64, activation='swish', input_shape=[5]),
-        keras.layers.Dense(64, activation='swish', input_shape=[5]), 
+        keras.layers.Dense(256, activation='swish'),
+        keras.layers.Dense(128, activation='swish'),
+        keras.layers.Dense(64, activation='swish'),
+        keras.layers.Dense(64, activation='swish'), 
         keras.layers.Dense(1)
         ])
     model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
-    model.fit(X_train, y_train, epochs=10, batch_size=32, validation_split=0.2)
+    model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2)
+'''
+Epoch 1/5
+loss: 21.1934 - accuracy: 0.7262 - val_loss: 0.5795 - val_accuracy: 0.7339
+Epoch 2/5
+loss: 1.0010 - accuracy: 0.7335 - val_loss: 0.5793 - val_accuracy: 0.7339
+Epoch 3/5
+loss: 0.5798 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 4/5
+loss: 0.5798 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
+Epoch 5/5
+loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5793 - val_accuracy: 0.7339
+'''
+
+    #graphing data from NN
+    fig, ax = plt.subplots(5, 2, figsize = (5,5)):

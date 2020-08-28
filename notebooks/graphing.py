@@ -89,7 +89,32 @@ if __name__ == "__main__":
     plt.legend()
     plt.show();
 
+    #---    ice cream
+    ice = full[full['aisle'] == 'ice cream ice'] 
+    top20 = ice['product_name'].value_counts()[:20]
+    top20list = list(top20.index)
+    top = ice[ice.product_name.isin(top20label)]
 
-    for prod in ice['product_name']:
-        if prod in toplist:
-            ice[ice.product_name != prod]
+    graph = pd.read_csv('../ice.csv')
+    label = list(graph['product_name'])
+
+    fig, ax = plt.subplots(figsize = (20,10))
+    for row in np.arange(20):
+        ice = label[row]
+        ax.plot(np.arange(24), graph.iloc[row,1:], label = ice)
+    ax.set_ylabel('Hours', fontdict=fontaxis)
+    ax.set_xlabel('Number of Orders', fontdict=fontaxis)
+    ax.tick_params(axis='both', which='major', labelsize=18)
+    plt.title('Time When the Top 20 Ice Creams are Ordered', fontdict=fonttitle)
+    plt.legend()
+    plt.show();
+
+    colors = sns.palplot(sns.color_palette("husl", 20))
+    plt.show()
+
+    fig, ax = plt.subplots(figsize = (20,10))
+    for row in np.arange(20):
+        ice = label[row]
+        ax = sns.lineplot(x = np.arange(24), y = graph.iloc[row,1:], label = ice)
+    plt.legend()
+    plt.show();
