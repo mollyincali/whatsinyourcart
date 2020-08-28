@@ -34,8 +34,6 @@ if __name__ == "__main__":
               metrics=['accuracy'])
     model.fit(X_train, y_train, epochs=3, batch_size=32, validation_split=0.2)
 
-run1loss = [793.7966, 181.4234, 21.2258]
-run1acc = [0.6140, 0.6274, 0.6700]
 '''
 Run1 with 1 layer relu
 Epoch 1/3
@@ -56,8 +54,6 @@ loss: 21.2258 - accuracy: 0.6700 - val_loss: 0.5802 - val_accuracy: 0.7339
               metrics=['accuracy'])
     model.fit(X_train, y_train, epochs=3, batch_size=32, validation_split=0.2)
 
-run2loss = [873.9270, 167.2178, 4.1501]
-run2acc = [0.6138, 0.6281, 0.7076]
 '''
 Epoch 1/3
 loss: 873.9270 - accuracy: 0.6138 - val_loss: 136.7671 - val_accuracy: 0.7283
@@ -78,8 +74,6 @@ loss: 4.1501 - accuracy: 0.7076 - val_loss: 0.5795 - val_accuracy: 0.7339
               metrics=['accuracy'])
     model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2)
 
-run3loss = [298.1448, 0.7434, 0.8325, 0.7049, 0.6982]
-run3acc = [0.6887, 0.7334, 0.7334, 0.7335, 0.7335]
 '''
 Epoch 1/5
 loss: 298.1448 - accuracy: 0.6887 - val_loss: 0.5794 - val_accuracy: 0.7339
@@ -161,6 +155,7 @@ loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5794 - val_accuracy: 0.7339
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
     model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2)
+run4acc = [0.7262, 0.7335, 0.7336, 0.7336, 0.7336]
 '''
 Epoch 1/5
 loss: 21.1934 - accuracy: 0.7262 - val_loss: 0.5795 - val_accuracy: 0.7339
@@ -174,5 +169,30 @@ Epoch 5/5
 loss: 0.5797 - accuracy: 0.7336 - val_loss: 0.5793 - val_accuracy: 0.7339
 '''
 
-    #graphing data from NN
-    fig, ax = plt.subplots(5, 2, figsize = (5,5)):
+    #ugly graphing data from NN
+    # fig, axs = plt.subplots(1, 4, figsize = (5,5), sharey = True)
+    # acc = [[0.6140, 0.6274, 0.6700], [0.6138, 0.6281, 0.7076],
+    #         [0.6887, 0.7334, 0.7334, 0.7335, 0.7335], [0.7262, 0.7335, 0.7336, 0.7336, 0.7336]]
+    # for i, ax in enumerate(axs.flatten()):
+    #     ax.plot(acc[i])
+    # plt.show();
+
+    fig, axs = plt.subplots(1, 2, figsize = (10,10), sharey = True)
+    acc = [[0.6140, 0.6274, 0.6700], [0.6138, 0.6281, 0.7076],
+            [0.6887, 0.7334, 0.7334, 0.7335, 0.7335], [0.7262, 0.7335, 0.7336, 0.7336, 0.7336]]
+    for i, ax in enumerate(axs.flatten()):
+        ax.scatter(np.arange(3), acc[i], alpha=0.8)
+    plt.show();
+
+    fig, ax = plt.subplots(1, 2, figsize = (10,10), sharey = True)
+    x = range(3)
+    ax[0,0] = sns.scatterplot([x, run1acc, alpha=0.8)
+    ax[0,0] = sns.scatterplot(x, run2acc, alpha=0.8)
+    ax[0,0] = sns.scatterplot(x, run3acc, alpha=0.8)
+    ax[0,0] = sns.scatterplot(x, run4acc, alpha=0.8)
+    plt.show();
+
+run1acc = [0.6140, 0.6274, 0.6700]
+run2acc = [0.6138, 0.6281, 0.7076]
+run3acc = [0.6887, 0.7334, 0.7334, 0.7335, 0.7335]
+run4acc = [0.7262, 0.7335, 0.7336, 0.7336, 0.7336]

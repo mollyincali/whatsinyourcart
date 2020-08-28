@@ -1,14 +1,16 @@
 ![title](images/title.png)
-
+## The Data
 - Instacart partners with most supermarkets, and some local speciality shops depending on your area. Once you place an order a "personal shopper" will fulfill and deliver your order to your door on the same day
 
 - This dataset is made up of 3 million food orders from about 120,000 customers from the company spanned across multiple CSV files
 ![title](images/explains.jpg)
-## Customer Information
+
+## The Customer
 ![title](images/highestreorder.png)
 ![title](images/dayofweek.png)
 ![title](images/hour.png)
-
+![title](images/icecream.png)
+![title](images/oneorder.png)
 # High Dimensional Data
  
 ### Principal Components
@@ -24,8 +26,8 @@
 # Supervised Machine Learning
 ### Bananas
 - Can I predict if your cart has the number one ordered item - Bananas!
-    - Fun fact: 58% of users have ordered Bananas at least once
-    - Fun fact: Bananas have been ordered over 500,000 times 
+    - Fun fact: **58%** of users have ordered Bananas at least once
+    - Fun fact: Bananas have been ordered over **500,000** times 
 
 - Even with the information above we are dealing with imbalanced classes, only about 25% of orders have bananas
 
@@ -49,15 +51,18 @@
 # Supervised Machine Learning
 ### Organic
 - Can I predict if your cart has an Organic item?
-    - Fun fact: 10% of products are Organic
-    - Fun fact: 32% of items purchased are Organic
-    - Fun fact: 73% of orders have at least 1 Organic item
+    - Fun fact: **10%** of products are Organic
+    - Fun fact: **32%** of items purchased are Organic
+    - Fun fact: **73%** of orders have at least 1 Organic item
 
 - Yet again we're dealing with imbalanced classes. At least one Organic items appears in 75% of each order.
 ![title](images/organic.png)
 
 # Neural Nets
 - Lets try one more model. Neural Nets!
+
+### The Final Model
+- Given all the information given by my models the one I'd recommend is --ADD--
 
 ### Next Steps
 - Adjust the imbalance in both data sets by using oversampling, undersampling, and SMOTE to see the impact on my various models
