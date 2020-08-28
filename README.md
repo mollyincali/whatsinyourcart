@@ -53,7 +53,6 @@
 ### Organic
 - Can I predict if your cart has an Organic item?
     - Fun fact: **10%** of products are Organic
-    - Fun fact: **32%** of items purchased are Organic
     - Fun fact: **73%** of orders have at least 1 Organic item
 
 - Yet again we're dealing with imbalanced classes. At least one Organic item appears in 75% of each order.
