@@ -9,15 +9,17 @@
 ![title](images/highestreorder.png)
 ![title](images/dayofweek.png)
 ![title](images/hour.png)
+###### Ice cream is my favorite, when is it ordered? 
 ![title](images/icecream.png)
-![title](images/oneorder.png)
+###### What do customers with only 1 item ordering?
+![title](images/oneorder.png) 
 
 # High Dimensional Data
 
 ### Principal Components
-- The original train and test data from the Kaggle Competition has an itemized list of each users most recent order for a data frame of 200k+ orders and over 49k+ products
+- The original train and test data from the Kaggle Competition has an itemized list of each users most recent order for a data frame of 200k+ orders and over 49k+ products. The goal is to predict if a customer will reorder an item.
 
-- To reorganize the lets look at users and the number of purchases by aisle brining it down to 134 features. PCA was used to see if we can limit the number of features even further
+- That data set creates a very sparse matrix, so it was reogranized the number of orders per aisle not product. Brought it down to 134 features. PCA was used to see if we can limit the number of features even further
 
 - Realizing that there needs to be 117 features (instead of our original 134) to account for 90% variance in the model tells us that the features are already orthogonal (or pretty close) and won't help us limit our features.
 
@@ -35,7 +37,7 @@
 - Let’s look at the progression of accuracy and our F1 score over different models
 
 ![title](images/banana1.png)
-- The above image tells me I'm predicting fairly well on whether or not your cart has a Banana. The F1 score takes into account both false positives and false negatives, which may be a better indicator of how well my model is doing with this imbalanced class
+- The above image tells me I'm predicting fairly well on whether or not your cart has a Banana. The F1 score takes into account both false positives and false negatives, which will be a better indicator of how well my model is doing with this imbalanced class
 
 - One trick for imbalanced classes is to add more data, so let's do it!
 
