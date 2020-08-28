@@ -84,3 +84,45 @@ if __name__ == '__main__':
     X_train.to_csv("../X_train.csv")
     y_train.to_csv("../y_train.csv")
     full.to_csv('../full.csv')
+
+    #---    Set up Organic
+    full = pd.read_csv("../data/full.csv")
+    full['organic'] = full['product_name'].str.contains('Organic')
+
+    #grouped by orderid 2,460,729 / 3,346,083 orders 75% of orders have something organic 
+    by_order = full.groupby('order_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
+                                    'days_since_prior_order':'max', 'add_to_cart_order':'max', 
+                                    'organic':'max'}).reset_index()
+
+    #drops NaN in "Days Since Prior Order" which represents first time user
+    by_order.dropna(inplace = True)
+    y = by_order.pop('organic')
+
+    X_train, X_test, y_train, y_test = train_test_split(by_order, y, test_size=0.3, random_state=3, stratify = y)
+
+    #---    Set up Banana
+    full = pd.read_csv("../data/full.csv")
+
+    full['banana1'] = np.where(full['product_name'] == 'Banana', 1, 0)
+    full['banana2'] = np.where(full['product_name'] == 'Bag of Organic Bananas', 1, 0)
+    full['banana'] = full['banana2'] + full['banana1']
+
+    #grouped by user 120,725 ban / 206,209 orders 58% of people have ordered a banana
+    # by_user = full.groupby('user_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
+    #                                 'days_since_prior_order':'max', 'add_to_cart_order':'max', 
+    #                                 'banana':'max'}).reset_index()
+
+    #grouped by orderid 885,017 / 3,346,083 orders 25% of orders have a banana
+    by_order = full.groupby('order_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
+                                    'days_since_prior_order':'max', 'add_to_cart_order':'max', 
+                                    'banana':'max'}).reset_index()
+
+    #drops NaN in "Days Since Prior Order" which represents first time user
+    by_order.dropna(inplace = True)
+    y = by_order.pop('banana')
+    X_train, X_test, y_train, y_test = train_test_split(by_order, y, test_size=0.3, random_state=3, stratify = y)
+
+    X_train.to_csv("../bananaxtrain.csv")
+    X_test.to_csv("../bananaxtest.csv")
+    y_train.to_csv("../bananaytrain.csv")
+    y_test.to_csv("../bananaytest.csv")

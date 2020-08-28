@@ -4,8 +4,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 sns.set()
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_val_score, GridSearchCV, train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import KFold, cross_val_score, GridSearchCV
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score
 
 #---    Model Codes
@@ -34,21 +34,30 @@ def gridsearch_with_output(estimator, parameter_grid, X_train, y_train):
                                                 str(vals)))
     return best_params, model_best
 
-def balance_work(y_train):
-    n1 = np.sum(y_train)
-    n2 = len(y_train) - n1
-    n_samples = n1 + n2
-    w1 = n_samples / (2 * n1)
-    w2 = n_samples / (2 * n2)
-    return w1, w2
-
 if __name__ == '__main__':
-    #---    Upload csv
-    X_train.to_csv("../bananaxtrain.csv")
-    X_test.to_csv("../bananaxtest.csv")
-    y_train.to_csv("../bananaytrain.csv")
-    y_test.to_csv("../bananaytest.csv")
+    #---    Upload test / train csv
+    X_test = pd.read_csv("../X_test.csv")
+    X_train = pd.read_csv("../X_train.csv")
 
+    # looking for if order had B
+    # products[products['product_name'] == 'Banana'] #24852    
+    X_test['banana1'] = np.where(X_test['product_id'] == 24852, 1, 0)
+    X_test['banana2'] = np.where(X_test['product_id'] == 13176, 1, 0)
+    X_test['banana'] = X_test['banana2'] + X_test['banana1']
+    X_test = X_test.groupby('user_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
+                                    'days_since_prior_order':'max', 'add_to_cart_order':'max', 
+                                    'banana':'max'}).reset_index()
+    X_test.drop('user_id', axis = 1, inplace = True)
+    y_test = X_test.pop('banana') #1-10744, 0-64256
+
+    X_train['banana1'] = np.where(X_train['product_id'] == 24852, 1, 0)
+    X_train['banana2'] = np.where(X_train['product_id'] == 13176, 1, 0)
+    X_train['banana'] = X_train['banana2'] + X_train['banana1']
+    X_train = X_train.groupby('user_id').agg({'order_dow':'max', 'order_hour_of_day':"max", 
+                                    'days_since_prior_order':'max', 'add_to_cart_order':'max', 
+                                    'banana':'max'}).reset_index()
+    X_train.drop('user_id', axis = 1, inplace = True)
+    y_train = X_train.pop('banana') #1-18726, 0-112483
 
     #---    Empty lists to be appended
     mean_acc = []
@@ -99,8 +108,13 @@ if __name__ == '__main__':
     f1.append((f1_score(y_test, y_predict)))
     model.append('Random Forest Best Param')
 
-    #---    Get class weights
-    w1, w2 = balance_work(y_train)
+    #---    Balance Work
+    n1 = np.sum(y_train)
+    n2 = len(y_train) - n1
+    n_samples = n1 + n2
+    w1 = n_samples / (2 * n1)
+    w2 = n_samples / (2 * n2)
+    print(f"w1: {w1:0.2f}, w2: {w2:0.2f}")
 
     #---    Random Forest Trying to Balance with Class Weights
     rf = RandomForestClassifier(max_depth=4, max_features=3, min_samples_split=4, bootstrap=True,
@@ -114,16 +128,6 @@ if __name__ == '__main__':
     f1.append((f1_score(y_test, y_predict)))
     model.append('Random Forest Class Weights')
 
-    gb = GradientBoostingClassifier(learning_rate = 0.1, n_estimators=100, max_depth = 5)
-    gb.fit(X_train, y_train)
-    y_predict = gb.predict(X_test)
-    gb_score = gb.score(X_test, y_test)
-    print(f'Gradient Boost Mean Accuracy: {gb_score:.5}')
-    print(f'Gradient Boost F1 Score: {(f1_score(y_test, y_predict)):.5}')
-    mean_acc.append(gb_score)
-    f1.append((f1_score(y_test, y_predict)))
-    model.append('Gradient Boost')
-
     #---    making graphs special
     color1 = '#F1D78C'
     color2 = '#F6A811'
@@ -132,16 +136,15 @@ if __name__ == '__main__':
     color5 = '#E84846'
     citrus = [color1, color2, color3, color4, color5]
     sns.palplot(sns.color_palette(citrus))
+
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     fontaxis = {'fontname':'Helvetica', 'fontsize':20}
 
-    #---    With more data
+    #---    Graph Score and F1 and Model
     fig, ax = plt.subplots(figsize = (20, 10))
-    ax.plot(model, f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
-    ax.plot(model, mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')      
-    ax.set_ylim(ymin = 0.1, ymax = 0.9)
+    ax = sns.lineplot(x = model, y = f1, color= '#F6A811', marker='*', linewidth = 5, label = 'F1 Score')
+    ax = sns.lineplot(x = model, y = mean_acc, color='#EF727F', marker='*', linewidth = 5, label = 'Mean Accuracy Score')
     ax.tick_params(axis='both', which='major', labelsize=18)
-    plt.legend()
     plt.xticks(rotation = 10)
-    plt.title('Did you order Bananas? \n Additional Data Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
+    plt.title('Mean Accuracy Score and F1 Score', fontdict=fonttitle)
     plt.show();

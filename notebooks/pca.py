@@ -66,7 +66,7 @@ if __name__ == '__main__':
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     fontaxis = {'fontname':'Helvetica', 'fontsize':20}
 
-    #graph variance
+    #---    graph variance
     fig, ax = plt.subplots(figsize=(20,10))
     ax.plot(ratio_df[1], color='#F46708', linewidth=3, label='Explained Variance')
     ax.axhline(0.9, label='90% goal', linestyle='--', linewidth='2', color="#F1D78C")

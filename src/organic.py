@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 sns.set()
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_val_score, GridSearchCV, train_test_split
+from sklearn.model_selection import KFold, cross_val_score, GridSearchCV
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score
 
 #---    Model Codes
@@ -44,11 +44,10 @@ def balance_work(y_train):
 
 if __name__ == '__main__':
     #---    Upload csv
-    X_train.to_csv("../bananaxtrain.csv")
-    X_test.to_csv("../bananaxtest.csv")
-    y_train.to_csv("../bananaytrain.csv")
-    y_test.to_csv("../bananaytest.csv")
-
+    X_train = pd.read_csv("../organicxtrain.csv")
+    X_test = pd.read_csv("../organicxtest.csv")
+    y_train = pd.read_csv("../organicytrain.csv")
+    y_test = pd.read_csv("../organicytest.csv")
 
     #---    Empty lists to be appended
     mean_acc = []
@@ -114,6 +113,7 @@ if __name__ == '__main__':
     f1.append((f1_score(y_test, y_predict)))
     model.append('Random Forest Class Weights')
 
+    #---    Gradient Boost
     gb = GradientBoostingClassifier(learning_rate = 0.1, n_estimators=100, max_depth = 5)
     gb.fit(X_train, y_train)
     y_predict = gb.predict(X_test)
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     f1.append((f1_score(y_test, y_predict)))
     model.append('Gradient Boost')
 
-    #---    making graphs special
+    # #---    making graphs special
     color1 = '#F1D78C'
     color2 = '#F6A811'
     color3 = '#F46708'
@@ -132,16 +132,21 @@ if __name__ == '__main__':
     color5 = '#E84846'
     citrus = [color1, color2, color3, color4, color5]
     sns.palplot(sns.color_palette(citrus))
+
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     fontaxis = {'fontname':'Helvetica', 'fontsize':20}
 
-    #---    With more data
+    # f1organ = [0.780855766662009, 0.810787521393353, 0.8625252230849041, 0.806316987932276, 0.8622658274810833]
+    # meanorgan = [0.6786593528620551, 0.7142106430932, 0.7781728157050755, 0.7272982059804897, 0.7785051005188102]
+    # model = ['Decision Tree', 'Random Forest Basic', 'Random Forest Best Param', 'Random Forest Class Weights', 'Gradient Boost']
+
+    # #---    Graph Score and F1 and Model
     fig, ax = plt.subplots(figsize = (20, 10))
     ax.plot(model, f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
-    ax.plot(model, mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')      
+    ax.plot(model, mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')     
     ax.set_ylim(ymin = 0.1, ymax = 0.9)
     ax.tick_params(axis='both', which='major', labelsize=18)
     plt.legend()
     plt.xticks(rotation = 10)
-    plt.title('Did you order Bananas? \n Additional Data Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
+    plt.title('Do you order something Organic? \n Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
     plt.show();
