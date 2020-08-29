@@ -1,27 +1,29 @@
 ![title](images/title.png)
 ## The Data
-- Instacart partners with most supermarkets, and some local speciality shops depending on your area. Once you place an order a "personal shopper" will fulfill and deliver your order to your door on the same day
+- Instacart partners with most supermarkets, and some local specialty shops depending on your area. Once you place an order a "personal shopper" will fulfill and deliver your order to your door on the same day
 
-- This dataset is made up of 3 million food orders from about 120,000 customers from the company spanned across multiple CSV files
+- This dataset is made up of over 3 million food items orders from about 120,000 customers
+
+###### Image below shows how each unique product item belongs to an Aisle and Department
 ![title](images/explains.jpg)
 
 ## The Customer
+###### Image below tells us customers are there for produce and value the "Organic" label
 ![title](images/highestreorder.png)
+###### Date and time peaks tells us when we should ensure personal shoppers are available
 ![title](images/dayofweek.png)
 ![title](images/hour.png)
-###### Ice cream is my favorite, when is it ordered? 
-![title](images/icecream.png)
-###### What do customers with only 1 item ordering?
+###### Average items in an order is 5, what do customers with only 1 item order?
 ![title](images/oneorder.png) 
 
 # High Dimensional Data
 
 ### Principal Components
-- The original train and test data from the Kaggle Competition has an itemized list of each users most recent order for a data frame of 200k+ orders and over 49k+ products. The goal is to predict if a customer will reorder an item.
+- The original train and test data from the Kaggle Competition has an itemized list of each user's most recent order for a data frame of 200k+ orders and over 49k+ unique products. The goal is to predict if a customer will reorder an item.
 
-- That data set creates a very sparse matrix, so it was reogranized the number of orders per aisle not product. Brought it down to 134 features. PCA was used to see if we can limit the number of features even further
+- That data set creates a very sparse matrix, so it was reorganized to reflect the number of items ordered per aisle. 
 
-- Realizing that there needs to be 117 features (instead of our original 134) to account for 90% variance in the model tells us that the features are already orthogonal (or pretty close) and won't help us limit our features.
+- PCA was used to see if we can limit the number of features even further. Realizing that there need to be 117 features (instead of our original 134) to account for 90% variance in the model tells us that the features are already orthogonal (or pretty close) and won't help us limit our features as much as I'd like to see.
 
 - The Curse of Dimensionality strikes again... so moving on!
 ![title](images/pca.png)
@@ -29,47 +31,69 @@
 # Supervised Machine Learning
 ### Bananas
 - Can I predict if your cart has the number one ordered item - Bananas!
-    - Fun fact: **58%** of users have ordered Bananas at least once
-    - Fun fact: Bananas have been ordered over **500,000** times 
+    - **58%** of users have ordered Bananas at least once
+    - Bananas and Organic Bananas have been ordered over **850,000** times in this data set
 
-- Even with the information above we are dealing with imbalanced classes, only about 25% of orders have bananas
+- Even with the information above we are dealing with imbalanced classes, so I'll need to account for that in our train test split and model parameters. For the various models, I will train we will look at each user, the time of day, day of the week, the number of items in cart, and days since prior order to predict if the user has a Banana in their cart.
 
 - Let’s look at the progression of accuracy and our F1 score over different models
 
-![title](images/banana1.png)
-- The above image tells me I'm predicting fairly well on whether or not your cart has a Banana. The F1 score takes into account both false positives and false negatives, which will be a better indicator of how well my model is doing with this imbalanced class
-
-- One trick for imbalanced classes is to add more data, so let's do it!
-
-- Let's pull in every order we have in our data set and made sure both the training and test data have the same amount of Banana and non-Banana carts (don't worry we did that in the previous examples)
-
-- We'll also try out a Gradient Boost Model on this larger data set
-
 ![title](images/banana2.png)
 
-- With more data, we still have imbalanced classes, but these models perform fairly close to how they did with the smaller data set.
-
-- Our Gradient Boost Model wasn't as helpful as I thought it might be. 
+- The above image tells me I'm predicting fairly well on whether or not your cart has a Banana. The F1 score takes into account both false positives and false negatives, which will be a better indicator of how well my model is doing with this imbalanced class. I was surprised to see the Gradient Boost Model F1 score so low. 
 
 # Supervised Machine Learning
 ### Organic
 - Can I predict if your cart has an Organic item?
-    - Fun fact: **10%** of products are Organic
-    - Fun fact: **73%** of orders have at least 1 Organic item
+    - **10%** of products are Organic
+    - **73%** of orders have at least 1 Organic item
 
-- Yet again we're dealing with imbalanced classes. At least one Organic item appears in 75% of each order.
+- Yet again we're dealing with imbalanced classes so I'll need to account for that in the train test split and model parameters again. 
 ![title](images/organic.png)
+- The image above tells me that my models are predicting Organic items way more accurately than Bananas. With this train, test, split we are seeing F1 scores higher than our mean accuracy scores - which is good, in this case.
 
 # Neural Nets
-### Neural Nets for predicting if an Organic item is in your cart
 
 ![title](images/onn3.png)
+```
+Organic Neural Net:
+Epoch 1/5
+loss: 247.2045 - accuracy: 0.6969 - val_loss: 0.5764 - val_accuracy: 0.7369
 
-### Neural Nets for predicting if a Banana is in your cart
+Epoch 2/5
+loss: 0.6649 - accuracy: 0.7378 - val_loss: 0.5763 - val_accuracy: 0.7369
+
+Epoch 3/5
+loss: 0.6303 - accuracy: 0.7377 - val_loss: 0.5764 - val_accuracy: 0.7369
+
+Epoch 4/5
+loss: 0.6677 - accuracy: 0.7378 - val_loss: 0.5763 - val_accuracy: 0.7369
+
+Epoch 5/5
+loss: 0.6695 - accuracy: 0.7377 - val_loss: 0.5763 - val_accuracy: 0.7369
+```
 ![title](images/bnn3.png)
+```
+Banana Neural Net
+Epoch 1/5
+loss: 298.1448 - accuracy: 0.6887 - val_loss: 0.5794 - val_accuracy: 0.7339
+
+Epoch 2/5
+loss: 0.7434 - accuracy: 0.7334 - val_loss: 0.5793 - val_accuracy: 0.7339
+
+Epoch 3/5
+loss: 0.8325 - accuracy: 0.7334 - val_loss: 0.5794 - val_accuracy: 0.7339
+
+Epoch 4/5
+loss: 0.7049 - accuracy: 0.7335 - val_loss: 0.5793 - val_accuracy: 0.7339
+
+Epoch 5/5
+loss: 0.6982 - accuracy: 0.7335 - val_loss: 0.5793 - val_accuracy: 0.7339
+```
+- With both Neural Net results we are seeing a very high loss score and then a drastic drop after 1 Epoch. With such a large drop it looks like it flattens out at 0 when our reports actual land closer to 0.7
 
 ### The Final Model
-- Given all the information given by my models, the best model for predicting if a Banana is in someone’s order is Random Forest with Class Weights. Has the highest accuracy and highest F1 score.
+- Given all the information provided by my models, the best model for predicting if a Banana is in someone’s order is Random Forest with Class Weights, which has the highest F1 score.
 - The best model for predicting if an Organic item is in someone’s order is Random Forest with the Best Parameters from my GridSearch. Has the highest accuracy and highest F1 score.
 
 ### Next Steps
