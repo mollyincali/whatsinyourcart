@@ -44,10 +44,10 @@ def balance_work(y_train):
 
 if __name__ == '__main__':
     #---    Upload csv
-    X_train = pd.read_csv("../organicxtrain.csv")
-    X_test = pd.read_csv("../organicxtest.csv")
-    y_train = pd.read_csv("../organicytrain.csv")
-    y_test = pd.read_csv("../organicytest.csv")
+    X_train = pd.read_csv("../organicxtrain.csv").drop('Unnamed: 0', axis = 1)
+    X_test = pd.read_csv("../organicxtest.csv").drop('Unnamed: 0', axis = 1) 
+    y_train = pd.read_csv("../organicytrain.csv").drop('Unnamed: 0', axis = 1) 
+    y_test = pd.read_csv("../organicytest.csv").drop('Unnamed: 0', axis = 1) 
 
     #---    Empty lists to be appended
     mean_acc = []
@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     #---    Random Forest Basic Model 
     rf = RandomForestClassifier(n_estimators=50)
-    rf.fit(X_train, y_train)
+    rf.fit(X_train, np.ravel(y_train))
     y_predict = rf.predict(X_test)
     rf_score = rf.score(X_test, y_test)
     print(f'Random Forest Score: {rf_score:.5}')
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
     #---    Random Forest BEST Model 
     rf = RandomForestClassifier(max_depth=4, max_features=3, min_samples_split=4, n_estimators=80, random_state=3)
-    rf.fit(X_train, y_train)
+    rf.fit(X_train, np.ravel(y_train))
     y_predict = rf.predict(X_test)
     rf_score = rf.score(X_test, y_test)
     print(f'Random Forest Score Best Param: {rf_score:.5}')
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     #---    Random Forest Trying to Balance with Class Weights
     rf = RandomForestClassifier(max_depth=4, max_features=3, min_samples_split=4, bootstrap=True,
                     n_estimators=80, random_state=3, class_weight={1: w1, 0: w2})
-    rf.fit(X_train, y_train)
+    rf.fit(X_train, np.ravel(y_train))
     y_predict = rf.predict(X_test)
     rf_score = rf.score(X_test, y_test)
     print(f'Random Forest Mean Accuracy Weight + Bootstrap: {rf_score:.5}')
@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
     #---    Gradient Boost
     gb = GradientBoostingClassifier(learning_rate = 0.1, n_estimators=100, max_depth = 5)
-    gb.fit(X_train, y_train)
+    gb.fit(X_train, np.ravel(y_train))
     y_predict = gb.predict(X_test)
     gb_score = gb.score(X_test, y_test)
     print(f'Gradient Boost Mean Accuracy: {gb_score:.5}')
@@ -135,10 +135,6 @@ if __name__ == '__main__':
 
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     fontaxis = {'fontname':'Helvetica', 'fontsize':20}
-
-    # f1organ = [0.780855766662009, 0.810787521393353, 0.8625252230849041, 0.806316987932276, 0.8622658274810833]
-    # meanorgan = [0.6786593528620551, 0.7142106430932, 0.7781728157050755, 0.7272982059804897, 0.7785051005188102]
-    # model = ['Decision Tree', 'Random Forest Basic', 'Random Forest Best Param', 'Random Forest Class Weights', 'Gradient Boost']
 
     # #---    Graph Score and F1 and Model
     fig, ax = plt.subplots(figsize = (20, 10))
