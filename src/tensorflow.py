@@ -29,8 +29,8 @@ def nn_2layers(epoch, activate):
     return: List of loss, validation loss, accuracy and validation accuracy 
     '''
     model = keras.models.Sequential([
-        keras.layers.Dense(128, activation=acivate, input_shape=[5]),
-        keras.layers.Dense(64, activation=acivate), 
+        keras.layers.Dense(128, activation=activate, input_shape=[5]),
+        keras.layers.Dense(64, activation=activate), 
         keras.layers.Dense(1)
         ])
     model.compile(optimizer='adam',
@@ -103,11 +103,11 @@ if __name__ == '__main__':
     loss2, val_loss2, acc2, val_acc2 = nn_1layer(3, 'swish')
     nn_plot(acc2, loss2, val_acc2, val_loss2, '1 Layer, and Swish', 'Organic')
 
-    loss3, val_loss3, acc3, val_acc3 = nn_2layer(5, 'swish')
-    nn_plot(acc3, loss3, valacc3, valloss3, '2 Layers, and Swish', 'Organic')
+    loss3, val_loss3, acc3, val_acc3 = nn_2layers(5, 'swish')
+    nn_plot(acc3, loss3, val_loss3, val_acc3, '2 Layers, and Swish', 'Organic')
 
     loss4, val_loss4, acc4, val_acc4 = nn_5layers(5, 'swish') 
-    nn_plot(acc4, loss4, valacc4, valloss4, '5 Layers, and Swish', 'Organic')
+    nn_plot(acc4, loss4, val_acc4, val_loss4, '5 Layers, and Swish', 'Organic')
 
 
     #---    Train and Test for Banana
@@ -121,8 +121,8 @@ if __name__ == '__main__':
     b_loss2, b_val_loss2, b_acc2, b_val_acc2 = nn_1layer(3, 'swish')
     nn_plot(b_acc2, b_loss2, b_val_acc2, b_val_loss2, '1 Layer, and Swish', 'Banana')
 
-    b_loss3, b_val_loss3, b_acc3, b_val_acc3 = nn_2layer(5, 'swish')
-    nn_plot(b_acc3, b_loss3, b_valacc3, b_valloss3, '2 Layers, and Swish', 'Banana')
+    b_loss3, b_val_loss3, b_acc3, b_val_acc3 = nn_2layers(5, 'swish')
+    nn_plot(b_acc3, b_loss3, b_val_acc3, b_val_loss3, '2 Layers, and Swish', 'Banana')
 
     b_loss4, b_val_loss4, b_acc4, b_val_acc4 = nn_5layers(5, 'swish') 
-    nn_plot(b_acc4, b_loss4, b_valacc4, b_valloss4, '5 Layers, and Swish', 'Banana')
+    nn_plot(b_acc4, b_loss4, b_val_acc4, b_val_loss4, '5 Layers, and Swish', 'Banana')
