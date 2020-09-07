@@ -44,11 +44,11 @@ def balance_work(y_train):
 
 if __name__ == '__main__':
     #---    Upload csv
-    X_train.to_csv("../bananaxtrain.csv")
-    X_test.to_csv("../bananaxtest.csv")
-    y_train.to_csv("../bananaytrain.csv")
-    y_test.to_csv("../bananaytest.csv")
-
+    X_train = pd.read_csv("../bananaxtrain.csv").drop('Unnamed: 0', axis = 1)
+    X_test = pd.read_csv("../bananaxtest.csv").drop('Unnamed: 0', axis = 1)
+    y_train = pd.read_csv("../bananaytrain.csv").drop('Unnamed: 0', axis = 1)
+    y_test = pd.read_csv("../bananaytest.csv").drop('Unnamed: 0', axis = 1)
+    y_train = np.ravel(y_train)
 
     #---    Empty lists to be appended
     mean_acc = []
