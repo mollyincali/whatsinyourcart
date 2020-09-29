@@ -26,7 +26,7 @@
 ![title](images/perc_new.png)
 
 - I created a column to calculate the average items in a users cart
-![title](images/perc_new.png)
+![title](images/avg_cart.png)
 
 # Supervised Machine Learning
 ### Bananas

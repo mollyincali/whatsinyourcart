@@ -44,6 +44,16 @@ def make_bar(df, col_x, col_y, title, x_label, y_label):
     plt.title(title, fontdict=fonttitle)
     plt.show();
 
+def get_one_item():
+    order_train = pd.read_csv('../../instacart_data/order_products__train.csv')
+    order_prior = pd.read_csv("../../instacart_data/order_products__prior.csv")
+    products = pd.read_csv("../../instacart_data/products.csv")
+    one = order_prior.groupby('order_id').agg({'add_to_cart_order':'max', 'product_id':'max'}).reset_index()
+    one = one[one['add_to_cart_order'] == 1] 
+    one = one.groupby('product_id').agg({'add_to_cart_order':'sum'}).reset_index().sort_values(by = 'add_to_cart_order', ascending = False)[:20]
+    one = pd.merge(one, products, how= 'inner', on = 'product_id')
+    return one
+
 if __name__ == "__main__":
     pass
     color1 = '#F1D78C'
@@ -53,6 +63,7 @@ if __name__ == "__main__":
     color5 = '#E84846'
     citrus = [color1, color2, color3, color4, color5]
 
-    make_bar(top_one, 'add_to_cart_order', 'product_name', 'Top Items For Single Orders', 
-                'Number of Times Ordered Once', 'Product Name')
+    one = get_one_item()
+    make_bar(one, 'add_to_cart_order', 'product_name', 'Top Items For Single Orders', 
+                'Number of Times Occurs as Only Item Ordered', 'Product Name')
     
