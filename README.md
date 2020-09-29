@@ -4,29 +4,29 @@
 
 - This dataset is made up of over 3 million food items orders from about 120,000 customers
 
-###### Image below shows how each unique product item belongs to an Aisle and Department
-![title](images/explains.jpg)
-
 ## The Customer
 ###### Image below tells us customers are there for produce and value the "Organic" label
 ![title](images/highestreorder.png)
 ###### Date and time peaks tells us when we should ensure personal shoppers are available
-![title](images/dayofweek.png)
 ![title](images/hour.png)
-###### Average items in an order is 5, what do customers with only 1 item order?
-![title](images/oneorder.png) 
+###### What do customers with only 1 item order?
+![title](images/single_order.png) 
 
 # High Dimensional Data
 
 ### Principal Components
 - The original train and test data from the Kaggle Competition has an itemized list of each user's most recent order for a data frame of 200k+ orders and over 49k+ unique products. The goal is to predict if a customer will reorder an item.
 
-- That data set creates a very sparse matrix, so it was reorganized to reflect the number of items ordered per aisle. 
-
-- PCA was used to see if we can limit the number of features even further. Realizing that there need to be 117 features (instead of our original 134) to account for 90% variance in the model tells us that the features are already orthogonal (or pretty close) and won't help us limit our features as much as I'd like to see.
-
-- The Curse of Dimensionality strikes again... so moving on!
+- That data set creates a very sparse matrix, so it was reorganized to reflect the number of items ordered per aisle. PCA was used to see if we can limit the number of features even further. Realizing that there need to be 117 features (instead of our original 134) to account for 90% variance in the model tells us that the features are already orthogonal (or pretty close) and won't help us limit our features as much as I'd like to see.
 ![title](images/pca.png)
+
+- Next was to look at some feature engineering. Can we create addition features from the data we have to make a better prediction on wheater or not that particular user will reorder that specific item? The answer is always yes...
+
+- I created a column to calculate the average percent of "new" items that each user orders
+![title](images/perc_new.png)
+
+- I created a column to calculate the average items in a users cart
+![title](images/perc_new.png)
 
 # Supervised Machine Learning
 ### Bananas

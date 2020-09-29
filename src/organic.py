@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 sns.set()
+from graphing import *
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import KFold, cross_val_score, GridSearchCV
@@ -49,7 +50,7 @@ if __name__ == '__main__':
     y_train = pd.read_csv("../organicytrain.csv").drop('Unnamed: 0', axis = 1) 
     y_test = pd.read_csv("../organicytest.csv").drop('Unnamed: 0', axis = 1) 
 
-    #---    Empty lists to be appended
+    #---    Empty lists to be appended and graphed
     mean_acc = []
     f1 = []
     model = []
@@ -124,25 +125,5 @@ if __name__ == '__main__':
     f1.append((f1_score(y_test, y_predict)))
     model.append('Gradient Boost')
 
-    # #---    making graphs special
-    color1 = '#F1D78C'
-    color2 = '#F6A811'
-    color3 = '#F46708'
-    color4 = '#EF727F'
-    color5 = '#E84846'
-    citrus = [color1, color2, color3, color4, color5]
-    sns.palplot(sns.color_palette(citrus))
-
-    fonttitle = {'fontname':'Helvetica', 'fontsize':30}
-    fontaxis = {'fontname':'Helvetica', 'fontsize':20}
-
-    # #---    Graph Score and F1 and Model
-    fig, ax = plt.subplots(figsize = (20, 10))
-    ax.plot(model, f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
-    ax.plot(model, mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')     
-    ax.set_ylim(ymin = 0.1, ymax = 0.9)
-    ax.tick_params(axis='both', which='major', labelsize=18)
-    plt.legend()
-    plt.xticks(rotation = 10)
-    plt.title('Do you order something Organic? \n Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
-    plt.show();
+    #---    Get graph
+    score_f1(model, f1, mean_acc)
