@@ -9,7 +9,6 @@ sns.set()
 from graphing import *
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import KFold, cross_val_score, GridSearchCV
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score
 
 def setup(order_train, orders, order_prior):
@@ -61,29 +60,29 @@ def decision_t(X_test, y_test, X_train, y_train):
     dt.fit(X_train, y_train)
     dt_predict = dt.predict(X_test)
     dt_score = dt.score(X_test, y_test)
-    dt_f1 = f1_score(y_test, y_predict)
+    dt_f1 = f1_score(y_test, dt_predict)
     print(f'Decision Tree Accuracy: {dt_score:.5}')
     print(f'Decision Tree F1 Score: {dt_f1:.5}\n')
     return dt, dt_score, dt_f1
 
 def random_f(X_test, y_test, X_train, y_train):
     ''' random forest code '''
-    rf = RandomForestClassifier(n_estimators=50)
+    rf = RandomForestClassifier(n_estimators=100, max_depth=10)
     rf.fit(X_train, np.ravel(y_train))
-    y_predict = rf.predict(X_test)
+    rf_predict = rf.predict(X_test)
     rf_score = rf.score(X_test, y_test)
-    rf_f1 = f1_score(y_test, y_predict)
+    rf_f1 = f1_score(y_test, rf_predict)
     print(f'Random Forest Score: {rf_score:.5}')
     print(f'Random Forest F1 Score: {rf_f1:.5}\n')
-    return rf, rf_score, rf_f1
+    return rf, rf_score, rf_f1, rf_predict
 
 def gradient_b(X_test, y_test, X_train, y_train):
     ''' gradient boost code '''
-    gb = GradientBoostingClassifier(learning_rate = 0.1, n_estimators=100, max_depth = 5)
+    gb = GradientBoostingClassifier(learning_rate = 0.01, n_estimators=100, max_depth = 5)
     gb.fit(X_train, np.ravel(y_train))
-    y_predict = gb.predict(X_test)
+    gb_predict = gb.predict(X_test)
     gb_score = gb.score(X_test, y_test)
-    gb_f1 = f1_score(y_test, y_predict)
+    gb_f1 = f1_score(y_test, gb_predict)
     print(f'Gradient Boost Mean Accuracy: {gb_score:.5}')
     print(f'Gradient Boost F1 Score: {gb_f1:.5}')
     return gb, gb_score, gb_f1
@@ -119,9 +118,18 @@ if __name__ == '__main__':
 
     # decision tree
     dt, dt_score, dt_f1 = decision_t(X_test, y_test, X_train, y_train)
+    # Decision Tree Accuracy: 0.60611
+    # Decision Tree F1 Score: 0.66742
 
     # random forest
-    rf, rf_score, rf_f1 = random_f(X_test, y_test, X_train, y_train)
+    rf, rf_score, rf_f1, rf_predict = random_f(X_test, y_test, X_train, y_train)
+    # Random Forest Score: 0.71507
+    # Random Forest F1 Score: 0.77831
 
     # gradient boosting
     gb, gb_score, gb_f1 = gradient_b(X_test, y_test, X_train, y_train)
+    # Gradient Boost Mean Accuracy: 0.71776
+    # Gradient Boost F1 Score: 0.77758
+
+    cm = confusion_matrix(y_test, rf_predict)
+    make_heat(cm)
