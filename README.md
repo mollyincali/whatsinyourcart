@@ -5,7 +5,7 @@
 - This dataset is made up of over 3 million food items orders from about 120,000 customers
 
 - MVP: Can we determine if a customer will reorder a particular item?
-- MVP: Can we increase a customers basekt size through personalization?
+- MVP: Can we increase a customers basket size through personalization?
 ## The Customer
 ###### Image below tells us customers are there for produce and value the "Organic" label
 ![title](images/highestreorder.png)
@@ -22,15 +22,17 @@
 - That data set creates a very sparse matrix, so it was reorganized to reflect the number of items ordered per aisle. PCA was used to see if we can limit the number of features even further. Realizing that there need to be 117 features (instead of our original 134) to account for 90% variance in the model tells us that the features are already orthogonal (or pretty close) and won't help us limit our features as much as I'd like to see.
 ![title](images/pca.png)
 
-- Next we will go back to looking at each product and look at some feature engineering. Can we create addition features from the data we have to make a better prediction on wheater or not that particular user has ordered that specific item before? The answer is always yes...
+- Next, we will go back to looking at each product and look at some feature engineering. Can we create additional features from the data we have to make a better prediction on wheater or not that particular user has ordered that specific item before? The answer is always yes...
 
-- I created a column to calculate the average percent of "new" items that each user orders
+- I organized the data frame index by combining the user and their product purchased. I brought in the number of items in the cart for that order, the day of the week, the hour, days since their previous order, and the order in which that item was added to their cart.
+
+- I created a column to calculate the average percentage of "new" items that each user orders
 ![title](images/perc_new.png)
 
 - I created a column to calculate the average items in a users cart
 ![title](images/avg_cart.png)
 
-- Three supervised machine learning models were attempted: Decision Tree, Random Forest, and Gradient Boosting with very similar f1 score coming from the Gradient Boosting and Random Forest model. The accuracy tells me I am doing well on predicting if a user will reorder that item, the F1 scores takes into account both the false negatives and false positives. 
+- Three supervised machine learning models were attempted: Decision Tree, Random Forest, and Gradient Boosting with a very similar f1 score coming from the Gradient Boosting and Random Forest model. The accuracy tells me I am doing well on predicting if a user will reorder that item, the F1 scores take into account both the false negatives and false positives.
 ![title](images/reorder.png)
 
 # Supervised Machine Learning
@@ -55,8 +57,11 @@
 - Yet again we're dealing with imbalanced classes so I'll need to account for that in the train test split and model parameters again. The image below tells me that my models are predicting Organic items with more accuracy than in the Banana models. With this train, test, split we are seeing F1 scores higher than our mean accuracy scores - which is good, in this case.
 ![title](images/organic2.png)
 
+### The Best ModelS?
+- Gradient Boosting provides the best metrics for all three questions. Has the customer ordered this before? Did the customer purchase Bananas? Did the customer purchase something Organic?
+
 # Recommending Similar Items
-- Word2Vec was used to recommend similar items to customers. Any item listed in the products csv can be searched to find the top 10 paired purchaes. 
+- Word2Vec was used to recommend similar items to customers. Any item listed in the products csv can be searched to find the top 10 paired purchases. 
 
 ```
 Top 10 Paired Purchases for Mango_Slices: 
@@ -71,9 +76,6 @@ Top 10 Paired Purchases for Mango_Slices:
  ('White_English_Muffins', 0.65385),
  ('Original_Spelt_Organic_English_Muffins', 0.65363)
 ```
-
-### The Final Model
-- Gradient Boosting provides the best metrics for all three questions. Has the customer ordered this before? Did the customer purchase Bananas? Did the customer purchase something Organic?
 
 ### Slide Deck
 Click [here](https://docs.google.com/presentation/d/1BBCFvZQyoPhWqSCCnT39D1kuxSmetfv1qS_6LKE_Sn4/edit#slide=id.p) for slide deck.
