@@ -56,7 +56,21 @@
 ![title](images/organic2.png)
 
 # Recommending Similar Items
+- Word2Vec was used to recommend similar items to customers. Any item listed in the products csv can be searched to find the top 10 paired purchaes. 
 
+```
+Top 10 Paired Purchases for Mango_Slices: 
+ ('Yogurt_Covered_Pretzels', 0.79739),
+ ('Milk_Chocolate_Pretzels', 0.68340),
+ ('Wheat_Organic_Bread', 0.68032),
+ ('Organic_Apple_Rings', 0.68000),
+ ('Whole_Wheat_English_Muffins', 0.67952),
+ ('Shelled_Pistachios', 0.67644),
+ ('Small_Macintosh_Apple', 0.66885),
+ ('Butter_Toasted_Peanuts', 0.65812),
+ ('White_English_Muffins', 0.65385),
+ ('Original_Spelt_Organic_English_Muffins', 0.65363)
+```
 
 ### The Final Model
 - Gradient Boosting provides the best metrics for all three questions. Has the customer ordered this before? Did the customer purchase Bananas? Did the customer purchase something Organic?
