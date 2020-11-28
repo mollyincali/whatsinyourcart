@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 sns.set()
 
 def hist_perc_new(col):
+    ''' Graph % New Items '''
     plt.hist(col, bins = 60, color = '#F1D78C')
     plt.title("Each Users Average Percentage of NEW Items")
     plt.xlabel('Percentage of NEW Items')
@@ -15,6 +16,7 @@ def hist_perc_new(col):
     plt.show();
 
 def hist_avg_cart(col):
+    ''' Graph average number of items in cart '''
     plt.hist(col, bins = 100, color = '#F46708')
     plt.title("Each Users Average Cart Order")
     plt.xlabel('Average Cart Order')
@@ -22,7 +24,7 @@ def hist_avg_cart(col):
     plt.show();
 
 def score_f1(model, f1, mean_acc):
-    # #---    Graph Score and F1 and Model
+    ''' Graph Score and F1 and Model '''
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     fig, ax = plt.subplots(figsize = (20, 10))
     ax.plot(model, f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
@@ -66,7 +68,6 @@ def make_heat(cm):
     plt.show();
 
 if __name__ == "__main__":
-    pass
     color1 = '#F1D78C'
     color2 = '#F6A811'
     color3 = '#F46708'
@@ -77,4 +78,3 @@ if __name__ == "__main__":
     one = get_one_item()
     make_bar(one, 'add_to_cart_order', 'product_name', 'Top Items For Single Orders', 
                 'Number of Times Occurs as Only Item Ordered', 'Product Name')
-    
