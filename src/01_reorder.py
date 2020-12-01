@@ -7,9 +7,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 sns.set()
 from graphing import *
+
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score
+from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score, accuracy_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import KFold
 
 def setup(order_train, orders, order_prior):
     ''' sets up our data frames '''
@@ -87,6 +90,24 @@ def gradient_b(X_test, y_test, X_train, y_train):
     print(f'Gradient Boost F1 Score: {gb_f1:.5}')
     return gb, gb_score, gb_f1
 
+def log_regression(model, num_folds):
+    kfold = KFold(n_splits=num_folds)
+
+    acc = []
+    f1 = []
+
+    for train_index, test_index in kfold.split(X_train):
+        model = LogisticRegression(random_state=3)
+        model.fit(X_train.iloc[train_index], y_train.iloc[train_index])
+        y_predict = model.predict(X_train.iloc[test_index])
+        y_true = y_train.iloc[test_index]
+        acc.append(accuracy_score(y_true, y_predict))
+        f1.append(f1_score(y_true, y_predict))
+
+    print("Accuracy:", np.average(acc))
+    print("F1 Score:", np.average(f1))
+    return acc, f1
+
 if __name__ == '__main__':
     #read in csv
     order_train = pd.read_csv('../../instacart_data/order_products__train.csv')
@@ -116,20 +137,19 @@ if __name__ == '__main__':
     X_train, y_train = return_newdf(train)
     X_test, y_test = return_newdf(test)
 
+    # logistic regression
+    clf = LogisticRegression(random_state=3)
+    lracc, lrf1 = log_regression(clf, 10)
+
     # decision tree
     dt, dt_score, dt_f1 = decision_t(X_test, y_test, X_train, y_train)
-    # Decision Tree Accuracy: 0.60611
-    # Decision Tree F1 Score: 0.66742
 
     # random forest
     rf, rf_score, rf_f1, rf_predict = random_f(X_test, y_test, X_train, y_train)
-    # Random Forest Score: 0.71507
-    # Random Forest F1 Score: 0.77831
 
     # gradient boosting
     gb, gb_score, gb_f1 = gradient_b(X_test, y_test, X_train, y_train)
-    # Gradient Boost Mean Accuracy: 0.71776
-    # Gradient Boost F1 Score: 0.77758
 
+    # graphing
     cm = confusion_matrix(y_test, rf_predict)
     make_heat(cm)

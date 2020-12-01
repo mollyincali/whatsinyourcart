@@ -127,21 +127,10 @@ if __name__ == '__main__':
 
     # decision tree
     dt, dt_score, dt_f1, dt_predict = decision_t(X_test, y_test, x_o, y_o)
-    # Decision Tree Accuracy: 0.66245
-    # Decision Tree F1 Score: 0.33797
 
     # random forest
     rf, rf_score, rf_f1, rf_predict = random_f(X_test, y_test, x_o, y_o)
-    # Random Forest Score: 0.64248
-    # Random Forest F1 Score: 0.50193
 
     # gradient boosting
     gb, gb_score, gb_f1, gb_predict = gradient_b(X_test, y_test, x_o, y_o)
-    # Gradient Boost Mean Accuracy: 0.63967
-    # Gradient Boost F1 Score: 0.50312
 
-    # make line graph
-    model = ['Decision Tree', 'Random Forest', 'Gradient Boosting']
-    f1 = [.33797,.50193, 0.50312]
-    mean_acc = [.66245, .64248, 0.63967]
-    score_f1(model, f1, mean_acc)

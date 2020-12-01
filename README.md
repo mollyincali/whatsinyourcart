@@ -33,7 +33,7 @@
 ![title](images/avg_cart.png)
 
 - Three supervised machine learning models were attempted: Decision Tree, Random Forest, and Gradient Boosting with a very similar f1 score coming from the Gradient Boosting and Random Forest model. The accuracy tells me I am doing well on predicting if a user will reorder that item, the F1 scores take into account both the false negatives and false positives.
-![title](images/reorder.png)
+![title](images/reorderscore.png)
 
 # Supervised Machine Learning
 ### Bananas
@@ -45,7 +45,7 @@
 
 - Let’s look at the progression of accuracy and our F1 score over different models
 
-![title](images/banana3.png)
+![title](images/banana.png)
 
 - The above image tells me I'm predicting fairly well on whether or not your cart has a Banana. The F1 score takes into account both false positives and false negatives, which will be a better indicator of how well my model is doing with this imbalanced class. I was surprised to see the Gradient Boost Model F1 score so low. 
 
@@ -55,7 +55,7 @@
     - **73%** of orders have at least 1 Organic item
 
 - Yet again we're dealing with imbalanced classes so I'll need to account for that in the train test split and model parameters again. The image below tells me that my models are predicting Organic items with more accuracy than in the Banana models. With this train, test, split we are seeing F1 scores higher than our mean accuracy scores - which is good, in this case.
-![title](images/organic2.png)
+![title](images/organic.png)
 
 ### The Best ModelS?
 - Gradient Boosting provides the best metrics for all three questions. Has the customer ordered this before? Did the customer purchase Bananas? Did the customer purchase something Organic?

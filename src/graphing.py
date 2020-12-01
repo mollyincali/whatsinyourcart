@@ -23,17 +23,17 @@ def hist_avg_cart(col):
     plt.ylabel('Number of Users')
     plt.show();
 
-def score_f1(model, f1, mean_acc):
+def score_f1(model, f1, mean_acc, title):
     ''' Graph Score and F1 and Model '''
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     fig, ax = plt.subplots(figsize = (20, 10))
     ax.plot(model, f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
     ax.plot(model, mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')     
-    ax.set_ylim(ymin = 0.1, ymax = 0.9)
+    ax.set_ylim(ymin = 0.3, ymax = 0.9)
     ax.tick_params(axis='both', which='major', labelsize=18)
     plt.legend()
     plt.xticks(rotation = 10)
-    plt.title('Do you order something Organic? \n Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
+    plt.title(f'{title} \n Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
     plt.show();
 
 def make_bar(df, col_x, col_y, title, x_label, y_label):
