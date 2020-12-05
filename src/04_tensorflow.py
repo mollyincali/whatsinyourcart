@@ -1,3 +1,6 @@
+'''
+code to explor neural nets for predictive models
+'''
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt

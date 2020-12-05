@@ -3,9 +3,6 @@ will the user reorder a particular item?
 '''
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-sns.set()
 from graphing import *
 
 from sklearn.tree import DecisionTreeClassifier
@@ -36,8 +33,11 @@ def new_col(df):
 def get_perc_new(df):
     ''' used to get average percent new items from each user '''
     new_df = df.groupby('order_id').agg({'add_to_cart_order':'max','reordered':'sum'}).reset_index()
+    #number reordered items / number in cart 
     new_df['perc_new'] = 1 - (new_df['reordered'] / new_df['add_to_cart_order'])
+    #merge to get additional info about order
     new_df = pd.merge(new_df, orders,  how='inner', on = 'order_id')
+    #get average by user
     new_df = new_df.groupby('user_id').agg({'perc_new':'mean','add_to_cart_order':'mean'})
     new_df = new_df.rename(columns={'perc_new':'user_avg_perc_new', 'add_to_cart_order':'avg_cart_order'}).reset_index() 
     return new_df
@@ -58,7 +58,7 @@ def return_newdf(df):
     return final_df, final_target
 
 def decision_t(X_test, y_test, X_train, y_train):
-    ''' decision tree  code '''
+    ''' decision tree code '''
     dt = DecisionTreeClassifier()
     dt.fit(X_train, y_train)
     dt_predict = dt.predict(X_test)
@@ -90,7 +90,8 @@ def gradient_b(X_test, y_test, X_train, y_train):
     print(f'Gradient Boost F1 Score: {gb_f1:.5}')
     return gb, gb_score, gb_f1
 
-def log_regression(model, num_folds):
+def log_regression(num_folds):
+    ''' logistic regression code '''
     kfold = KFold(n_splits=num_folds)
 
     acc = []
@@ -98,9 +99,9 @@ def log_regression(model, num_folds):
 
     for train_index, test_index in kfold.split(X_train):
         model = LogisticRegression(random_state=3)
-        model.fit(X_train.iloc[train_index], y_train.iloc[train_index])
-        y_predict = model.predict(X_train.iloc[test_index])
-        y_true = y_train.iloc[test_index]
+        model.fit(X_train[train_index], y_train[train_index])
+        y_predict = model.predict(X_train[test_index])
+        y_true = y_train[test_index]
         acc.append(accuracy_score(y_true, y_predict))
         f1.append(f1_score(y_true, y_predict))
 
@@ -113,7 +114,7 @@ if __name__ == '__main__':
     order_train = pd.read_csv('../../instacart_data/order_products__train.csv')
     orders = pd.read_csv("../../instacart_data/orders.csv")
     order_prior = pd.read_csv("../../instacart_data/order_products__prior.csv")
-    
+
     # get df
     order_train, order_test = setup(order_train, orders, order_prior)
 
@@ -121,8 +122,8 @@ if __name__ == '__main__':
     user_avg = get_perc_new(order_prior)
     
     # histogram graph
-    hist_perc_new(user_avg['user_avg_perc_new'])
-    hist_avg_cart(user_avg['avg_cart_order'])
+    hist_col(user_avg['avg_cart_order'], "Each Users Average Cart Order", 'Average Cart Order')
+    hist_col(user_avg['user_avg_perc_new'], "Each Users Average Percentage of NEW Items", 'Percentage of NEW Items')
 
     # merge
     order_train = pd.merge(order_train, user_avg,  how='inner', on = 'user_id')
@@ -138,8 +139,7 @@ if __name__ == '__main__':
     X_test, y_test = return_newdf(test)
 
     # logistic regression
-    clf = LogisticRegression(random_state=3)
-    lracc, lrf1 = log_regression(clf, 10)
+    lracc, lrf1 = log_regression(10)
 
     # decision tree
     dt, dt_score, dt_f1 = decision_t(X_test, y_test, X_train, y_train)

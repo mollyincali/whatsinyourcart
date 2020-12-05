@@ -5,13 +5,13 @@ product_id = 13176 bag of organic bananas
 '''
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-sns.set()
 from graphing import * 
+
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score
+from sklearn.metrics import confusion_matrix, plot_confusion_matrix, f1_score, accuracy_score
 
 def setup(order_train, orders, order_prior):
     ''' sets up our data frames '''
@@ -72,6 +72,24 @@ def oversample(X, y, tp):
 
     return X_oversampled, y_oversampled
 
+def log_regression(num_folds):
+    kfold = KFold(n_splits=num_folds)
+
+    acc = []
+    f1 = []
+
+    for train_index, test_index in kfold.split(x_o):
+        model = LogisticRegression(random_state=3)
+        model.fit(x_o[train_index], y_o[train_index])
+        y_predict = model.predict(x_o[test_index])
+        y_true = y_o[test_index]
+        acc.append(accuracy_score(y_true, y_predict))
+        f1.append(f1_score(y_true, y_predict))
+
+    print("Accuracy:", np.average(acc))
+    print("F1 Score:", np.average(f1))
+    return acc, f1
+
 def decision_t(X_test, y_test, X_train, y_train):
     ''' decision tree  code '''
     dt = DecisionTreeClassifier()
@@ -106,24 +124,27 @@ def gradient_b(X_test, y_test, X_train, y_train):
     return gb, gb_score, gb_f1, gb_predict
 
 if __name__ == '__main__':
-    #read in csv
+    # read in csv
     order_train = pd.read_csv('../../instacart_data/order_products__train.csv')
     orders = pd.read_csv("../../instacart_data/orders.csv")
     order_prior = pd.read_csv("../../instacart_data/order_products__prior.csv")
 
-    #combine df
+    # combine df
     order_train, order_test = setup(order_train, orders, order_prior)
 
-    #make banana col
+    # make banana col
     order_train = make_target(order_train) 
     order_test = make_target(order_test) 
 
-    #model df
+    # model df
     X_train, y_train = model_df(order_train) #26% have a banana
     X_test, y_test = model_df(order_test) #26% have a banana
 
-    #oversample train
+    # oversample train
     x_o, y_o = oversample(X_train.values, y_train.values, 0.5)
+
+    # logistic regression
+    lracc, lrf1 = log_regression(10)
 
     # decision tree
     dt, dt_score, dt_f1, dt_predict = decision_t(X_test, y_test, x_o, y_o)
@@ -133,4 +154,3 @@ if __name__ == '__main__':
 
     # gradient boosting
     gb, gb_score, gb_f1, gb_predict = gradient_b(X_test, y_test, x_o, y_o)
-

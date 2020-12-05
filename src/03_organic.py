@@ -1,9 +1,9 @@
-''' using code from 02_banana '''
+''' 
+code to predict if a user has ordered an organic items
+'''
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-sns.set()
+
 from graphing import *
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier

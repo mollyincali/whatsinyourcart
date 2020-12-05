@@ -1,5 +1,5 @@
 '''
-file of EDA and graphing
+file for graph codes used throughout project
 '''
 import numpy as np
 import pandas as pd
@@ -7,19 +7,24 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 sns.set()
 
-def hist_perc_new(col):
-    ''' Graph % New Items '''
-    plt.hist(col, bins = 60, color = '#F1D78C')
-    plt.title("Each Users Average Percentage of NEW Items")
-    plt.xlabel('Percentage of NEW Items')
-    plt.ylabel('Number of Users')
-    plt.show();
+def color_theme():
+    ''' set up color theme for visuals '''
+    color1 = '#F1D78C'
+    color2 = '#F6A811'
+    color3 = '#F46708'
+    color4 = '#EF727F'
+    color5 = '#E84846'
+    return [color1, color2, color3, color4, color5]
+    # return ['#F1D78C','#F6A811','#F46708','#EF727F','#E84846']
 
-def hist_avg_cart(col):
+def hist_col(col, title, x_title):
     ''' Graph average number of items in cart '''
-    plt.hist(col, bins = 100, color = '#F46708')
-    plt.title("Each Users Average Cart Order")
-    plt.xlabel('Average Cart Order')
+    fonttitle = {'fontname':'Helvetica', 'fontsize':30}
+    plt.hist(col, bins = 100, color = '#F1D78C')
+    plt.title(f"{title}", fontdict=fonttitle)
+    plt.axvline(np.mean(col), color ='#F46708', marker = '.', label = f'Mean Cart Size = {np.mean(col)}')
+    plt.legend()
+    plt.xlabel(f'{x_title}')
     plt.ylabel('Number of Users')
     plt.show();
 
@@ -29,27 +34,23 @@ def score_f1(model, f1, mean_acc, title):
     fig, ax = plt.subplots(figsize = (20, 10))
     ax.plot(model, f1, color= '#EF727F', marker='*', linewidth = 5, label = 'F1 Score')
     ax.plot(model, mean_acc, color='#F6A811', marker='*', linewidth = 5, label = 'Mean Accuracy Score')     
-    ax.set_ylim(ymin = 0.3, ymax = 0.9)
+    # ax.set_ylim(ymin = 0.3, ymax = 0.9)
     ax.tick_params(axis='both', which='major', labelsize=18)
     plt.legend()
     plt.xticks(rotation = 10)
     plt.title(f'{title} \n Mean Accuracy Score and F1 Score by Model', fontdict=fonttitle)
     plt.show();
 
-def make_bar(df, col_x, col_y, title, x_label, y_label):
+def make_bar(df, col_x, col_y, title, x_label, y_label, colors):
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     fig, ax = plt.subplots(figsize = (20, 10))
-    ax = sns.barplot(df[col_x], df[col_y], palette = citrus)
+    ax = sns.barplot(df[col_x], df[col_y], palette = colors)
     ax.set_ylabel(y_label)
     ax.set_xlabel(x_label)
-    # ax.tick_params(axis='both', which='major', labelsize=18)
     plt.title(title, fontdict=fonttitle)
     plt.show();
 
-def get_one_item():
-    order_train = pd.read_csv('../../instacart_data/order_products__train.csv')
-    order_prior = pd.read_csv("../../instacart_data/order_products__prior.csv")
-    products = pd.read_csv("../../instacart_data/products.csv")
+def get_one_item(order_prior, products):
     one = order_prior.groupby('order_id').agg({'add_to_cart_order':'max', 'product_id':'max'}).reset_index()
     one = one[one['add_to_cart_order'] == 1] 
     one = one.groupby('product_id').agg({'add_to_cart_order':'sum'}).reset_index().sort_values(by = 'add_to_cart_order', ascending = False)[:20]
@@ -67,14 +68,50 @@ def make_heat(cm):
     sns.heatmap(cm, annot=labels, fmt='', cmap='Reds')
     plt.show();
 
-if __name__ == "__main__":
-    color1 = '#F1D78C'
-    color2 = '#F6A811'
-    color3 = '#F46708'
-    color4 = '#EF727F'
-    color5 = '#E84846'
-    citrus = [color1, color2, color3, color4, color5]
+def setup_depatment(order_prior, products, orders):
+    ''' set up department data frame to build department order visual '''
+    df = pd.merge(order_prior, products, how = 'left', on = 'product_id')
+    df.drop(['add_to_cart_order','reordered', 'aisle_id', 'product_name'], axis = 1, inplace = True)
+    df1 = pd.merge(orders, df, how = 'left', on = 'order_id')
+    df2 = df1.groupby(['department_id','order_hour_of_day'])['order_id'].count().reset_index()
+    df2 = pd.merge(df2, depart, how = 'left', on = 'department_id')
+    topdepart = df2.groupby('department').agg({"order_id":'sum'}).sort_values(by='order_id', ascending = False)[:10]
+    df2 = df2[df2['department'].isin(list(topdepart.index))]
+    df3 = pd.pivot_table(df2, values = 'order_id', index = 'order_hour_of_day', 
+                    columns = 'department', aggfunc = 'sum', fill_value = 0, margins = True).reset_index()
+    return df3[['order_hour_of_day','produce','dairy eggs',
+                'snacks','beverages','frozen','pantry',
+                'bakery','canned goods','deli','dry goods pasta']]
 
-    one = get_one_item()
+def department_orders(df3):
+    ''' line plot graph of top 10 department hours '''
+    fonttitle = {'fontname':'Helvetica', 'fontsize':30}
+    num=0
+    line_color = sns.color_palette("hls", 10)
+    for column in df3.drop('order_hour_of_day', axis=1):
+        num+=1
+        plt.plot(df3['order_hour_of_day'], df3[column], marker='', linewidth=2, alpha=0.9, label=column, color = line_color[num - 1])
+    plt.title('Number of Orders Per Hour by Department', fontdict=fonttitle)
+    plt.xlabel('Hour')
+    plt.ylabel('Number of Orders')
+    plt.legend(loc=2)
+    plt.show();
+
+if __name__ == "__main__":
+    #-- SET UP COLOR THEME
+    citrus = color_theme()
+
+    #-- BRING IN DATA
+    order_prior = pd.read_csv("../../instacart_data/order_products__prior.csv")
+    products = pd.read_csv("../../instacart_data/products.csv")
+    orders = pd.read_csv('../../instacart_data/orders.csv')
+    depart = pd.read_csv('../../instacart_data/departments.csv')
+
+    #-- GETTING ONE ITEM
+    one = get_one_item(order_prior, products)
     make_bar(one, 'add_to_cart_order', 'product_name', 'Top Items For Single Orders', 
-                'Number of Times Occurs as Only Item Ordered', 'Product Name')
+                'Number of Times Occurs as Only Item Ordered', 'Product Name', citrus)
+
+    #-- DEPARTMENT BY HOUR
+    department_df = setup_depatment(order_prior, products, orders)
+    department_order()
