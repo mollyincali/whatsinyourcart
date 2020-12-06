@@ -22,7 +22,7 @@ def hist_col(col, title, x_title):
     fonttitle = {'fontname':'Helvetica', 'fontsize':30}
     plt.hist(col, bins = 100, color = '#F1D78C')
     plt.title(f"{title}", fontdict=fonttitle)
-    plt.axvline(np.mean(col), color ='#F46708', marker = '.', label = f'Mean Cart Size = {np.mean(col)}')
+    # plt.axvline(np.mean(col), color ='#F46708', marker = '.', label = f'Mean Cart Size = {np.mean(col)}')
     plt.legend()
     plt.xlabel(f'{x_title}')
     plt.ylabel('Number of Users')
@@ -136,14 +136,3 @@ if __name__ == "__main__":
     #-- DEPARTMENT BY HOUR
     department_df = setup_depatment(order_prior, products, orders)
     department_order()
-
-    [('organic_bananas & organic_avocado', 52454),
- ('banana & organic_avocado', 50841),
- ('organic_spinach & organic_bananas', 46368),
- ('banana & organic_strawberries', 44044),
- ('organic_bananas & organic_raspberries', 41163),
- ('organic_spinach & banana', 32463),
- ('organic_bananas & organic_strawberries', 29365),
- ('organic_avocado & banana', 26702),
- ('organic_avocado & organic_strawberries', 26628),
- ('organic_raspberries & organic_avocado', 25064)]
