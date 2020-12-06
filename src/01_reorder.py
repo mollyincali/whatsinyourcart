@@ -122,7 +122,7 @@ if __name__ == '__main__':
     user_avg = get_perc_new(order_prior)
     
     # histogram graph
-    hist_col(user_avg['avg_cart_order'], "Each Users Average Cart Order", 'Average Cart Order')
+    hist_col(user_avg['avg_cart_order'], "Each Users Average Cart Size", 'Average Cart Size')
     hist_col(user_avg['user_avg_perc_new'], "Each Users Average Percentage of NEW Items", 'Percentage of NEW Items')
 
     # merge

@@ -97,6 +97,27 @@ def department_orders(df3):
     plt.legend(loc=2)
     plt.show();
 
+def top_word_bar(tuple_list, title):
+    """ Graphs top words and bigrams
+    Args:
+        tuple_list ([tuple]): Tuple of top word or bigrams 
+        title ([str]): What to title the graph
+    """
+    words = []
+    num = []
+    
+    for i in tuple_list[::-1]:
+        words.append(i[0])
+        num.append(i[1])
+
+    fig, ax = plt.subplots(figsize = (10, 5))
+    ax.barh(words, np.array(num))
+    ax.set_title(f'{title}', fontsize = 30)
+    ax.set_yticklabels(words)
+    ax.set_ylabel('Number of Occurrences', fontsize = 20)
+    fig.tight_layout()
+    plt.show()
+
 if __name__ == "__main__":
     #-- SET UP COLOR THEME
     citrus = color_theme()
@@ -115,3 +136,14 @@ if __name__ == "__main__":
     #-- DEPARTMENT BY HOUR
     department_df = setup_depatment(order_prior, products, orders)
     department_order()
+
+    [('organic_bananas & organic_avocado', 52454),
+ ('banana & organic_avocado', 50841),
+ ('organic_spinach & organic_bananas', 46368),
+ ('banana & organic_strawberries', 44044),
+ ('organic_bananas & organic_raspberries', 41163),
+ ('organic_spinach & banana', 32463),
+ ('organic_bananas & organic_strawberries', 29365),
+ ('organic_avocado & banana', 26702),
+ ('organic_avocado & organic_strawberries', 26628),
+ ('organic_raspberries & organic_avocado', 25064)]

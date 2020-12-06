@@ -61,4 +61,6 @@ if __name__ == '__main__':
 
     #-- CREATE NEW DATAFRAME FOR
     train = setup_product_list(order_train)
-    word_freq = get_top_words(train[0], 10, (2,2))
+    prior = setup_product_list(order_prior)
+    full = pd.concat([prior, train], axis = 0) 
+    word_freq = get_top_words(full[0], 10, (2,2))
